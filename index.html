@@ -19,7 +19,6 @@
             --curuk: #c62828;
             --dara: #90a4ae;
             --total-color: #0d47a1;
-            --share-color: #25d366; /* WhatsApp yeşili */
         }
 
         * { box-sizing: border-box; }
@@ -131,7 +130,7 @@
 
         .share-btn {
             width: 100%;
-            background: #075e54;
+            background: #455a64;
             color: white;
             font-size: 1.1rem;
             font-weight: 700;
@@ -140,8 +139,8 @@
             border-radius: 10px;
             cursor: pointer;
             margin-top: 15px;
-            display: none; /* JS ile açılacak */
-            justify-content: center; align-items: center; gap: 10px;
+            display: none;
+            justify-content: center; align-items: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
@@ -249,7 +248,7 @@
         </div>
 
         <div class="toggle-area">
-            <span>Buruşuk Yarıya Düşülsün mu?</span>
+            <span>Buruşuk Yarıya Düşülsün mü?</span>
             <label class="switch">
                 <input type="checkbox" id="wrinkleLogic" checked>
                 <span class="slider"></span>
@@ -327,7 +326,7 @@
             </div>
 
             <button class="share-btn" id="shareBtn" onclick="paylas()">
-                <i class="fab fa-whatsapp"></i> SONUÇLARI PAYLAŞ
+                PAYLAŞ
             </button>
         </div>
     </div>
@@ -354,7 +353,6 @@
             let totalAmount = 0;
             let payableWeight = productNetWeight;
 
-            // UI Güncelleme
             document.getElementById('yieldResult').textContent = yieldVal.toFixed(2);
             document.getElementById('priceDisplay').textContent = "KG Fiyatı: " + finalPricePerKg.toFixed(2) + " TL";
             
@@ -374,12 +372,12 @@
             } else {
                 totalAmount = productNetWeight * finalPricePerKg;
                 lowYieldSection.style.display = 'none';
+                payableWeight = productNetWeight;
             }
 
             const formattedTotal = totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById('totalPaymentResult').textContent = formattedTotal + " TL";
 
-            // Paylaşım Metni Hazırla
             paylasimMetni = `*FINDIK SATIŞ DETAYI*\n` +
                 `---------------------------\n` +
                 `📌 *Randıman:* %${yieldVal.toFixed(2)}\n` +
@@ -407,7 +405,6 @@
                     console.log("Paylaşım iptal edildi");
                 }
             } else {
-                // Tarayıcı desteklemiyorsa doğrudan WhatsApp'a yönlendir
                 window.open(`https://wa.me/?text=${encodeURIComponent(paylasimMetni)}`, '_blank');
             }
         }
