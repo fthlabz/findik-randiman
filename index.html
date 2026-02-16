@@ -17,8 +17,9 @@
             --saglam: #2e7d32;
             --burusuk: #f9a825;
             --curuk: #c62828;
-            --dara: #90a4ae; /* Dara alanları için gri ton */
+            --dara: #90a4ae;
             --total-color: #0d47a1;
+            --share-color: #25d366; /* WhatsApp yeşili */
         }
 
         * { box-sizing: border-box; }
@@ -128,6 +129,22 @@
             display: flex; justify-content: center; align-items: center; gap: 10px;
         }
 
+        .share-btn {
+            width: 100%;
+            background: #075e54;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: none; /* JS ile açılacak */
+            justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
         .result-area {
             display: none;
             margin-top: 25px;
@@ -136,6 +153,7 @@
             padding: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             text-align: center;
+            margin-bottom: 50px;
         }
 
         .main-yield { font-size: 4rem; font-weight: 900; color: var(--primary); line-height: 1; }
@@ -164,8 +182,8 @@
 
         .kilo-alert {
             display: none;
-            background: #ffebee;
-            border: 2px dashed var(--curuk);
+            background: #fdf2f2;
+            border: 2px dashed #f8b4b4;
             border-radius: 10px;
             padding: 15px;
             margin-top: 15px;
@@ -191,7 +209,7 @@
         }
 
         .val-red { color: var(--curuk); font-weight: 900; }
-        .val-green { color: var(--primary); font-weight: 900; font-size: 1.1rem;}
+        .val-green { color: var(--primary); font-weight: 900; }
 
         .toggle-area {
             display: flex; justify-content: space-between; align-items: center;
@@ -211,16 +229,15 @@
     <div class="top-dashboard">
         <div class="dash-item">
             <label>BORSA FİYATI (TL)</label>
-            <input type="number" id="basePrice" placeholder="Örn: 130">
+            <input type="number" id="basePrice" placeholder="Örn: 210">
         </div>
         <div class="dash-item">
             <label>BRÜT TOPLAM (KG)</label>
-            <input type="number" id="totalKg" placeholder="Örn: 2000">
+            <input type="number" id="totalKg" placeholder="Örn: 400">
         </div>
     </div>
 
     <div class="main-container">
-        
         <div class="header-text">
             <h1>FINDIK PRO</h1>
             <p>Fındık Randıman & Dara Hesaplama</p>
@@ -232,7 +249,7 @@
         </div>
 
         <div class="toggle-area">
-            <span>Buruşuk Yarıya Düşülsün mü?</span>
+            <span>Buruşuk Yarıya Düşülsün mu?</span>
             <label class="switch">
                 <input type="checkbox" id="wrinkleLogic" checked>
                 <span class="slider"></span>
@@ -255,12 +272,12 @@
         </div>
 
         <div class="input-group g-dara">
-            <label>Çuval Adedi <span>Her çuval 1 kg düşer</span></label>
+            <label>Çuval Adedi <span>Her biri 1 kg</span></label>
             <input type="number" id="sackCount" placeholder="Adet">
         </div>
 
         <div class="input-group g-dara">
-            <label>Taş / Toprak Darası <span>Kg olarak girin</span></label>
+            <label>Taş / Toprak Darası <span>Kg bazında</span></label>
             <input type="number" id="dustWeight" placeholder="Kg">
         </div>
 
@@ -274,7 +291,7 @@
 
             <div class="price-display" id="priceDisplay">--- TL</div>
 
-            <div id="totalPaymentArea" class="total-payment" style="display:none;">
+            <div id="totalPaymentArea" class="total-payment">
                 <small>ÖDENECEK TOPLAM TUTAR</small>
                 <div id="totalPaymentResult">0.00 TL</div>
             </div>
@@ -288,115 +305,111 @@
                     <span id="alertGross">0 KG</span>
                 </div>
                 <div class="alert-row">
-                    <span>Dara (Çuval+Taş):</span>
+                    <span>Dara Toplamı:</span>
                     <span id="alertTare" class="val-red">0 KG</span>
                 </div>
                 <div class="alert-row" style="font-weight: 900; color: #333;">
                     <span>Net Ürün Kilosu:</span>
                     <span id="alertProductNet">0 KG</span>
                 </div>
-                <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                <div id="lowYieldSection">
+                
+                <div id="lowYieldSection" style="display:none;">
+                    <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
                     <div class="alert-row">
-                        <span>50 Randıman Altı Fire:</span>
+                        <span>50 Altı Randıman Fire:</span>
                         <span id="alertLoss" class="val-red">0 KG</span>
                     </div>
                     <div class="alert-row">
                         <span>Para Alacak Net Kilo:</span>
                         <span id="alertNet" class="val-green">0 KG</span>
                     </div>
-                    <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                </div>
-                <div class="alert-row">
-                    <span>Net Ödenecek:</span>
-                    <span id="alertNetCash" class="val-green">0.00 TL</span>
                 </div>
             </div>
-        </div>
 
+            <button class="share-btn" id="shareBtn" onclick="paylas()">
+                <i class="fab fa-whatsapp"></i> SONUÇLARI PAYLAŞ
+            </button>
+        </div>
     </div>
 
     <script>
+        let paylasimMetni = "";
+
         function hesapla() {
             const sample = parseFloat(document.getElementById('sampleWeight').value) || 250;
             const price = parseFloat(document.getElementById('basePrice').value) || 0;
             const totalKg = parseFloat(document.getElementById('totalKg').value) || 0;
-            
             const sound = parseFloat(document.getElementById('soundWeight').value) || 0;
             const wrinkled = parseFloat(document.getElementById('wrinkledWeight').value) || 0;
-            const rotten = parseFloat(document.getElementById('rottenWeight').value) || 0;
-            
-            // Dara değerleri
             const sacks = parseFloat(document.getElementById('sackCount').value) || 0;
             const dust = parseFloat(document.getElementById('dustWeight').value) || 0;
-            const totalTare = sacks + dust; // Her çuval 1 kg + taş toprak
-            
-            // Net ürün kilosunu hesapla
-            const productNetWeight = Math.max(0, totalKg - totalTare);
-
             const useWrinkleLogic = document.getElementById('wrinkleLogic').checked;
-            const wrinkleMultiplier = useWrinkleLogic ? 0.5 : 1.0;
-            const netWeight = sound + (wrinkled * wrinkleMultiplier);
-            const yieldVal = (netWeight / sample) * 100;
 
-            let finalPriceVal = 0;
-            if (price > 0) {
-                finalPriceVal = (price / 50) * yieldVal;
-            }
+            const totalTare = sacks + dust;
+            const productNetWeight = Math.max(0, totalKg - totalTare);
+            const netInnerWeight = sound + (wrinkled * (useWrinkleLogic ? 0.5 : 1.0));
+            const yieldVal = (netInnerWeight / sample) * 100;
 
+            let finalPricePerKg = price > 0 ? (price / 50) * yieldVal : 0;
+            let totalAmount = 0;
+            let payableWeight = productNetWeight;
+
+            // UI Güncelleme
             document.getElementById('yieldResult').textContent = yieldVal.toFixed(2);
+            document.getElementById('priceDisplay').textContent = "KG Fiyatı: " + finalPricePerKg.toFixed(2) + " TL";
             
-            const priceEl = document.getElementById('priceDisplay');
-            if(finalPriceVal > 0) {
-                priceEl.innerHTML = `KG Fiyatı: ${finalPriceVal.toFixed(2)} TL`;
-                priceEl.style.display = 'block';
-            } else {
-                priceEl.style.display = 'none';
-            }
+            document.getElementById('alertGross').textContent = totalKg + " KG";
+            document.getElementById('alertTare').textContent = "-" + totalTare.toFixed(1) + " KG";
+            document.getElementById('alertProductNet').textContent = productNetWeight.toFixed(1) + " KG";
 
-            // Genel Ödeme (Dara düşülmüş kilo üzerinden)
-            const totalArea = document.getElementById('totalPaymentArea');
-            if (finalPriceVal > 0 && productNetWeight > 0) {
-                const totalCash = finalPriceVal * productNetWeight;
-                document.getElementById('totalPaymentResult').textContent = totalCash.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " TL";
-                totalArea.style.display = 'block';
-            } else {
-                totalArea.style.display = 'none';
-            }
-
-            // Kilo Analiz Alanı
-            const kiloAlert = document.getElementById('kiloAlert');
-            if (productNetWeight > 0 || totalKg > 0) {
-                document.getElementById('alertGross').textContent = totalKg + " KG";
-                document.getElementById('alertTare').textContent = "-" + totalTare.toFixed(1) + " KG";
-                document.getElementById('alertProductNet').textContent = productNetWeight.toFixed(1) + " KG";
-
-                let finalPayableWeight = productNetWeight;
-                const lowYieldDiv = document.getElementById('lowYieldSection');
-
-                if (yieldVal < 50) {
-                    const yieldFactor = yieldVal / 50;
-                    finalPayableWeight = productNetWeight * yieldFactor;
-                    const lostKg = productNetWeight - finalPayableWeight;
-
-                    document.getElementById('alertLoss').textContent = "-" + lostKg.toFixed(1) + " KG";
-                    document.getElementById('alertNet').textContent = finalPayableWeight.toFixed(1) + " KG";
-                    lowYieldDiv.style.display = 'block';
-                } else {
-                    lowYieldDiv.style.display = 'none';
-                }
-
-                // Net Nakit: Eğer randıman 50 altıysa Net Kilo x Borsa Fiyatı, değilse Net Ürün x Hesaplanan Fiyat
-                const finalCash = (yieldVal < 50) ? (finalPayableWeight * price) : (productNetWeight * finalPriceVal);
-                document.getElementById('alertNetCash').textContent = finalCash.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " TL";
+            const lowYieldSection = document.getElementById('lowYieldSection');
+            if (yieldVal < 50) {
+                const yieldFactor = yieldVal / 50;
+                payableWeight = productNetWeight * yieldFactor;
+                totalAmount = payableWeight * price;
                 
-                kiloAlert.style.display = 'block';
+                document.getElementById('alertLoss').textContent = "-" + (productNetWeight - payableWeight).toFixed(1) + " KG";
+                document.getElementById('alertNet').textContent = payableWeight.toFixed(1) + " KG";
+                lowYieldSection.style.display = 'block';
             } else {
-                kiloAlert.style.display = 'none';
+                totalAmount = productNetWeight * finalPricePerKg;
+                lowYieldSection.style.display = 'none';
             }
+
+            const formattedTotal = totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('totalPaymentResult').textContent = formattedTotal + " TL";
+
+            // Paylaşım Metni Hazırla
+            paylasimMetni = `*FINDIK SATIŞ DETAYI*\n` +
+                `---------------------------\n` +
+                `📌 *Randıman:* %${yieldVal.toFixed(2)}\n` +
+                `💰 *Borsa Fiyatı:* ${price} TL\n` +
+                `⚖️ *Brüt Kilo:* ${totalKg} KG\n` +
+                `🚫 *Dara Toplamı:* ${totalTare.toFixed(1)} KG\n` +
+                `📦 *Net Ürün:* ${productNetWeight.toFixed(1)} KG\n` +
+                (yieldVal < 50 ? `📉 *50 Altı Net Kilo:* ${payableWeight.toFixed(1)} KG\n` : `💵 *Hesaplanan KG Fiyatı:* ${finalPricePerKg.toFixed(2)} TL\n`) +
+                `---------------------------\n` +
+                `✅ *TOPLAM ÖDEME:* ${formattedTotal} TL`;
 
             document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('shareBtn').style.display = 'flex';
             document.getElementById('resultArea').scrollIntoView({behavior: "smooth", block: "nearest"});
+        }
+
+        async function paylas() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Fındık Satış Detayı',
+                        text: paylasimMetni
+                    });
+                } catch (err) {
+                    console.log("Paylaşım iptal edildi");
+                }
+            } else {
+                // Tarayıcı desteklemiyorsa doğrudan WhatsApp'a yönlendir
+                window.open(`https://wa.me/?text=${encodeURIComponent(paylasimMetni)}`, '_blank');
+            }
         }
     </script>
 </body>
