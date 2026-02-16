@@ -17,10 +17,11 @@
             --saglam: #2e7d32;
             --burusuk: #f9a825;
             --curuk: #c62828;
+            --total-color: #0d47a1; /* Toplam fiyat için koyu mavi */
         }
 
         * {
-            box-sizing: border-box; /* Taşmaları engeller */
+            box-sizing: border-box; 
         }
 
         body {
@@ -29,16 +30,15 @@
             color: var(--text);
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Sağa sola kaymayı engeller */
+            overflow-x: hidden;
         }
 
-        /* PROFESYONEL ÜST BAR (Dashboard) */
         .top-dashboard {
             background-color: var(--header-bg);
             color: white;
             padding: 15px 20px;
             display: grid;
-            grid-template-columns: 1fr 1fr; /* İkiye böl */
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             position: sticky;
@@ -71,7 +71,6 @@
         .dash-item input::placeholder { color: rgba(255,255,255,0.3); font-size: 1rem; }
         .dash-item input:focus { background: rgba(255,255,255,0.2); border-color: var(--accent); }
 
-        /* ANA KART */
         .main-container {
             max-width: 500px;
             margin: 20px auto;
@@ -87,7 +86,7 @@
             margin: 0;
             color: var(--primary);
             font-size: 1.8rem;
-            font-weight: 900; /* Çok Kalın */
+            font-weight: 900;
             letter-spacing: -0.5px;
         }
 
@@ -99,7 +98,6 @@
             text-transform: uppercase;
         }
 
-        /* GİRİŞ KUTULARI TASARIMI */
         .input-group {
             background: white;
             border-radius: 12px;
@@ -110,11 +108,11 @@
             justify-content: space-between;
             padding: 12px 16px;
             border: 1px solid var(--border);
-            border-left: 6px solid #ccc; /* Varsayılan sol çizgi */
+            border-left: 6px solid #ccc;
         }
 
         .input-group label {
-            font-weight: 800; /* Kalın */
+            font-weight: 800;
             font-size: 1rem;
             color: var(--text);
             display: flex;
@@ -138,13 +136,11 @@
 
         .input-group input:focus { border-color: var(--primary); background: #fff; }
 
-        /* ÖZEL RENKLER */
         .g-saglam { border-left-color: var(--saglam); }
         .g-burusuk { border-left-color: var(--burusuk); }
         .g-curuk { border-left-color: var(--curuk); }
         .g-numune { border-left-color: #607d8b; background: #fff; }
 
-        /* BUTON */
         .calc-btn {
             width: 100%;
             background: var(--primary);
@@ -164,9 +160,8 @@
         }
         .calc-btn:active { transform: scale(0.98); }
 
-        /* SONUÇ ALANI */
         .result-area {
-            display: none; /* JS ile açılacak */
+            display: none;
             margin-top: 25px;
             background: white;
             border-radius: 16px;
@@ -193,9 +188,20 @@
             margin-bottom: 15px;
         }
 
-        /* 50 ALTI UYARI ALANI */
+        /* TOPLAM FİYAT ALANI */
+        .total-payment {
+            background: var(--total-color);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-weight: 800;
+        }
+        .total-payment small { display: block; font-size: 0.8rem; opacity: 0.8; margin-bottom: 5px; }
+        .total-payment div { font-size: 1.8rem; }
+
         .kilo-alert {
-            display: none; /* Sadece 50 altındaysa açılacak */
+            display: none;
             background: #ffebee;
             border: 2px dashed var(--curuk);
             border-radius: 10px;
@@ -227,7 +233,6 @@
         .val-red { color: var(--curuk); font-weight: 900; }
         .val-green { color: var(--primary); font-weight: 900; font-size: 1.1rem;}
 
-        /* SWITCH */
         .toggle-area {
             display: flex; justify-content: space-between; align-items: center;
             margin: 10px 5px 20px 5px; font-size: 0.85rem; font-weight: 600; color: #546e7a;
@@ -299,6 +304,11 @@
 
             <div class="price-display" id="priceDisplay">--- TL</div>
 
+            <div id="totalPaymentArea" class="total-payment" style="display:none;">
+                <small>ÖDENECEK TOPLAM TUTAR</small>
+                <div id="totalPaymentResult">0.00 TL</div>
+            </div>
+
             <div id="kiloAlert" class="kilo-alert">
                 <div class="alert-title">
                     <i class="fas fa-exclamation-circle"></i> 50 RANDIMAN ALTI UYARISI
@@ -323,52 +333,46 @@
 
     <script>
         function hesapla() {
-            // Değerleri Al
             const sample = parseFloat(document.getElementById('sampleWeight').value) || 250;
             const price = parseFloat(document.getElementById('basePrice').value) || 0;
             const totalKg = parseFloat(document.getElementById('totalKg').value) || 0;
             
-            // Inputlar boşsa 0 say
             const sound = parseFloat(document.getElementById('soundWeight').value) || 0;
             const wrinkled = parseFloat(document.getElementById('wrinkledWeight').value) || 0;
             const rotten = parseFloat(document.getElementById('rottenWeight').value) || 0;
             
-            // Ayarlar
             const useWrinkleLogic = document.getElementById('wrinkleLogic').checked;
 
-            // --- HESAPLAMA ---
-            
-            // Net İç Ağırlık Hesabı
             const wrinkleMultiplier = useWrinkleLogic ? 0.5 : 1.0;
             const netWeight = sound + (wrinkled * wrinkleMultiplier);
-
-            // Randıman Hesabı
             const yieldVal = (netWeight / sample) * 100;
 
-            // Fiyat Hesabı (Randımana göre)
             let finalPriceVal = 0;
             if (price > 0) {
                 finalPriceVal = (price / 50) * yieldVal;
             }
 
-            // --- UI GÜNCELLEME ---
-            
-            // Randımanı yaz
             document.getElementById('yieldResult').textContent = yieldVal.toFixed(2);
             
-            // Fiyatı yaz
             const priceEl = document.getElementById('priceDisplay');
             if(finalPriceVal > 0) {
-                priceEl.innerHTML = `Senin Fiyatın: ${finalPriceVal.toFixed(2)} TL`;
+                priceEl.innerHTML = `KG Fiyatı: ${finalPriceVal.toFixed(2)} TL`;
                 priceEl.style.display = 'block';
             } else {
                 priceEl.style.display = 'none';
             }
 
-            // --- KRİTİK BÖLÜM: KİLO DÜŞME MANTIĞI ---
+            // TOPLAM TUTAR HESABI
+            const totalArea = document.getElementById('totalPaymentArea');
+            if (finalPriceVal > 0 && totalKg > 0) {
+                const totalCash = finalPriceVal * totalKg;
+                document.getElementById('totalPaymentResult').textContent = totalCash.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " TL";
+                totalArea.style.display = 'block';
+            } else {
+                totalArea.style.display = 'none';
+            }
+
             const kiloAlert = document.getElementById('kiloAlert');
-            
-            // Şart: Randıman 50'den KÜÇÜKSE VE Toplam Kilo girildiyse göster
             if (yieldVal < 50 && totalKg > 0) {
                 const yieldFactor = yieldVal / 50;
                 const payableKg = totalKg * yieldFactor;
@@ -380,14 +384,10 @@
                 
                 kiloAlert.style.display = 'block';
             } else {
-                // Randıman 50 ve üstüyse veya kilo girilmediyse GİZLE
                 kiloAlert.style.display = 'none';
             }
 
-            // Sonuç alanını aç
             document.getElementById('resultArea').style.display = 'block';
-
-            // Ekrana sığdır
             document.getElementById('resultArea').scrollIntoView({behavior: "smooth", block: "nearest"});
         }
     </script>
