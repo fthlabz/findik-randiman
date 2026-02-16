@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fındık Randıman Hesaplama</title>
+    <title>Fındık Randıman Hesaplama Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #1b5e20;     /* Koyu Yeşil */
-            --header-bg: #263238;   /* Antrasit/Koyu Gri (Profesyonel Üst Kısım) */
-            --accent: #ff6f00;      /* Turuncu */
+            --primary: #1b5e20;
+            --header-bg: #263238;
+            --accent: #ff6f00;
             --bg: #eceff1;
             --card-bg: #ffffff;
             --text: #37474f;
@@ -17,12 +17,11 @@
             --saglam: #2e7d32;
             --burusuk: #f9a825;
             --curuk: #c62828;
-            --total-color: #0d47a1; /* Toplam fiyat için koyu mavi */
+            --dara: #90a4ae; /* Dara alanları için gri ton */
+            --total-color: #0d47a1;
         }
 
-        * {
-            box-sizing: border-box; 
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -68,8 +67,7 @@
             outline: none;
         }
         
-        .dash-item input::placeholder { color: rgba(255,255,255,0.3); font-size: 1rem; }
-        .dash-item input:focus { background: rgba(255,255,255,0.2); border-color: var(--accent); }
+        .dash-item input:focus { border-color: var(--accent); }
 
         .main-container {
             max-width: 500px;
@@ -77,26 +75,9 @@
             padding: 0 15px;
         }
 
-        .header-text {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .header-text h1 {
-            margin: 0;
-            color: var(--primary);
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-        }
-
-        .header-text p {
-            margin: 5px 0 0;
-            color: #546e7a;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
+        .header-text { text-align: center; margin-bottom: 25px; }
+        .header-text h1 { margin: 0; color: var(--primary); font-size: 1.8rem; font-weight: 900; }
+        .header-text p { margin: 5px 0 0; color: #546e7a; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
 
         .input-group {
             background: white;
@@ -111,14 +92,7 @@
             border-left: 6px solid #ccc;
         }
 
-        .input-group label {
-            font-weight: 800;
-            font-size: 1rem;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-        }
-
+        .input-group label { font-weight: 800; font-size: 1rem; color: var(--text); display: flex; flex-direction: column; }
         .input-group label span { font-size: 0.75rem; color: #78909c; font-weight: normal; margin-top: 2px;}
 
         .input-group input {
@@ -129,16 +103,14 @@
             text-align: center;
             border: 2px solid #eceff1;
             border-radius: 8px;
-            color: #333;
             outline: none;
             background: #fafafa;
         }
 
-        .input-group input:focus { border-color: var(--primary); background: #fff; }
-
         .g-saglam { border-left-color: var(--saglam); }
         .g-burusuk { border-left-color: var(--burusuk); }
         .g-curuk { border-left-color: var(--curuk); }
+        .g-dara { border-left-color: var(--dara); }
         .g-numune { border-left-color: #607d8b; background: #fff; }
 
         .calc-btn {
@@ -153,12 +125,8 @@
             cursor: pointer;
             margin-top: 15px;
             box-shadow: 0 4px 10px rgba(27, 94, 32, 0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        .calc-btn:active { transform: scale(0.98); }
 
         .result-area {
             display: none;
@@ -170,12 +138,7 @@
             text-align: center;
         }
 
-        .main-yield {
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--primary);
-            line-height: 1;
-        }
+        .main-yield { font-size: 4rem; font-weight: 900; color: var(--primary); line-height: 1; }
         .yield-subtitle { font-size: 1rem; font-weight: bold; color: #78909c; margin-bottom: 15px; }
 
         .price-display {
@@ -188,7 +151,6 @@
             margin-bottom: 15px;
         }
 
-        /* TOPLAM FİYAT ALANI */
         .total-payment {
             background: var(--total-color);
             color: white;
@@ -216,9 +178,7 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            display: flex; align-items: center; gap: 5px;
         }
 
         .alert-row {
@@ -254,7 +214,7 @@
             <input type="number" id="basePrice" placeholder="Örn: 130">
         </div>
         <div class="dash-item">
-            <label>TOPLAM MAL (KG)</label>
+            <label>BRÜT TOPLAM (KG)</label>
             <input type="number" id="totalKg" placeholder="Örn: 2000">
         </div>
     </div>
@@ -263,7 +223,7 @@
         
         <div class="header-text">
             <h1>FINDIK PRO</h1>
-            <p>Fındık Randıman Hesaplama</p>
+            <p>Fındık Randıman & Dara Hesaplama</p>
         </div>
 
         <div class="input-group g-numune">
@@ -294,6 +254,16 @@
             <input type="number" id="rottenWeight" placeholder="gr">
         </div>
 
+        <div class="input-group g-dara">
+            <label>Çuval Adedi <span>Her çuval 1 kg düşer</span></label>
+            <input type="number" id="sackCount" placeholder="Adet">
+        </div>
+
+        <div class="input-group g-dara">
+            <label>Taş / Toprak Darası <span>Kg olarak girin</span></label>
+            <input type="number" id="dustWeight" placeholder="Kg">
+        </div>
+
         <button class="calc-btn" onclick="hesapla()">
             <i class="fas fa-calculator"></i> HESAPLA
         </button>
@@ -311,20 +281,35 @@
 
             <div id="kiloAlert" class="kilo-alert">
                 <div class="alert-title">
-                    <i class="fas fa-exclamation-circle"></i> 50 RANDIMAN ALTI UYARISI
+                    <i class="fas fa-exclamation-circle"></i> KİLO & RANDIMAN ANALİZİ
                 </div>
                 <div class="alert-row">
-                    <span>Toplam Kilo:</span>
-                    <span id="alertTotal">0 KG</span>
+                    <span>Brüt Kilo:</span>
+                    <span id="alertGross">0 KG</span>
                 </div>
                 <div class="alert-row">
-                    <span>Silinen (Fire):</span>
-                    <span id="alertLoss" class="val-red">0 KG</span>
+                    <span>Dara (Çuval+Taş):</span>
+                    <span id="alertTare" class="val-red">0 KG</span>
                 </div>
-                <div style="border-top: 1px dashed #ccc; margin: 5px 0;"></div>
+                <div class="alert-row" style="font-weight: 900; color: #333;">
+                    <span>Net Ürün Kilosu:</span>
+                    <span id="alertProductNet">0 KG</span>
+                </div>
+                <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                <div id="lowYieldSection">
+                    <div class="alert-row">
+                        <span>50 Randıman Altı Fire:</span>
+                        <span id="alertLoss" class="val-red">0 KG</span>
+                    </div>
+                    <div class="alert-row">
+                        <span>Para Alacak Net Kilo:</span>
+                        <span id="alertNet" class="val-green">0 KG</span>
+                    </div>
+                    <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
+                </div>
                 <div class="alert-row">
-                    <span>Ödenecek Net:</span>
-                    <span id="alertNet" class="val-green">0 KG</span>
+                    <span>Net Ödenecek:</span>
+                    <span id="alertNetCash" class="val-green">0.00 TL</span>
                 </div>
             </div>
         </div>
@@ -341,8 +326,15 @@
             const wrinkled = parseFloat(document.getElementById('wrinkledWeight').value) || 0;
             const rotten = parseFloat(document.getElementById('rottenWeight').value) || 0;
             
-            const useWrinkleLogic = document.getElementById('wrinkleLogic').checked;
+            // Dara değerleri
+            const sacks = parseFloat(document.getElementById('sackCount').value) || 0;
+            const dust = parseFloat(document.getElementById('dustWeight').value) || 0;
+            const totalTare = sacks + dust; // Her çuval 1 kg + taş toprak
+            
+            // Net ürün kilosunu hesapla
+            const productNetWeight = Math.max(0, totalKg - totalTare);
 
+            const useWrinkleLogic = document.getElementById('wrinkleLogic').checked;
             const wrinkleMultiplier = useWrinkleLogic ? 0.5 : 1.0;
             const netWeight = sound + (wrinkled * wrinkleMultiplier);
             const yieldVal = (netWeight / sample) * 100;
@@ -362,25 +354,41 @@
                 priceEl.style.display = 'none';
             }
 
-            // TOPLAM TUTAR HESABI
+            // Genel Ödeme (Dara düşülmüş kilo üzerinden)
             const totalArea = document.getElementById('totalPaymentArea');
-            if (finalPriceVal > 0 && totalKg > 0) {
-                const totalCash = finalPriceVal * totalKg;
+            if (finalPriceVal > 0 && productNetWeight > 0) {
+                const totalCash = finalPriceVal * productNetWeight;
                 document.getElementById('totalPaymentResult').textContent = totalCash.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " TL";
                 totalArea.style.display = 'block';
             } else {
                 totalArea.style.display = 'none';
             }
 
+            // Kilo Analiz Alanı
             const kiloAlert = document.getElementById('kiloAlert');
-            if (yieldVal < 50 && totalKg > 0) {
-                const yieldFactor = yieldVal / 50;
-                const payableKg = totalKg * yieldFactor;
-                const lostKg = totalKg - payableKg;
+            if (productNetWeight > 0 || totalKg > 0) {
+                document.getElementById('alertGross').textContent = totalKg + " KG";
+                document.getElementById('alertTare').textContent = "-" + totalTare.toFixed(1) + " KG";
+                document.getElementById('alertProductNet').textContent = productNetWeight.toFixed(1) + " KG";
 
-                document.getElementById('alertTotal').textContent = totalKg + " KG";
-                document.getElementById('alertLoss').textContent = "-" + lostKg.toFixed(1) + " KG";
-                document.getElementById('alertNet').textContent = payableKg.toFixed(1) + " KG";
+                let finalPayableWeight = productNetWeight;
+                const lowYieldDiv = document.getElementById('lowYieldSection');
+
+                if (yieldVal < 50) {
+                    const yieldFactor = yieldVal / 50;
+                    finalPayableWeight = productNetWeight * yieldFactor;
+                    const lostKg = productNetWeight - finalPayableWeight;
+
+                    document.getElementById('alertLoss').textContent = "-" + lostKg.toFixed(1) + " KG";
+                    document.getElementById('alertNet').textContent = finalPayableWeight.toFixed(1) + " KG";
+                    lowYieldDiv.style.display = 'block';
+                } else {
+                    lowYieldDiv.style.display = 'none';
+                }
+
+                // Net Nakit: Eğer randıman 50 altıysa Net Kilo x Borsa Fiyatı, değilse Net Ürün x Hesaplanan Fiyat
+                const finalCash = (yieldVal < 50) ? (finalPayableWeight * price) : (productNetWeight * finalPriceVal);
+                document.getElementById('alertNetCash').textContent = finalCash.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " TL";
                 
                 kiloAlert.style.display = 'block';
             } else {
