@@ -7,9 +7,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #1b5e20;
-            --header-bg: #263238;
-            --accent: #ff6f00;
+            --primary: #1b5e20;     /* Koyu Yeşil */
+            --header-bg: #263238;   /* Antrasit/Koyu Gri (Profesyonel Üst Kısım) */
+            --accent: #ff6f00;      /* Turuncu */
             --bg: #eceff1;
             --card-bg: #ffffff;
             --text: #37474f;
@@ -17,10 +17,12 @@
             --saglam: #2e7d32;
             --burusuk: #f9a825;
             --curuk: #c62828;
-            --total-color: #0d47a1;
+            --total-color: #0d47a1; /* Toplam fiyat için koyu mavi */
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box; 
+        }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -66,7 +68,8 @@
             outline: none;
         }
         
-        .dash-item input:focus { border-color: var(--accent); }
+        .dash-item input::placeholder { color: rgba(255,255,255,0.3); font-size: 1rem; }
+        .dash-item input:focus { background: rgba(255,255,255,0.2); border-color: var(--accent); }
 
         .main-container {
             max-width: 500px;
@@ -74,9 +77,26 @@
             padding: 0 15px;
         }
 
-        .header-text { text-align: center; margin-bottom: 25px; }
-        .header-text h1 { margin: 0; color: var(--primary); font-size: 1.8rem; font-weight: 900; }
-        .header-text p { margin: 5px 0 0; color: #546e7a; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
+        .header-text {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-text h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text p {
+            margin: 5px 0 0;
+            color: #546e7a;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
         .input-group {
             background: white;
@@ -91,7 +111,14 @@
             border-left: 6px solid #ccc;
         }
 
-        .input-group label { font-weight: 800; font-size: 1rem; color: var(--text); display: flex; flex-direction: column; }
+        .input-group label {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+        }
+
         .input-group label span { font-size: 0.75rem; color: #78909c; font-weight: normal; margin-top: 2px;}
 
         .input-group input {
@@ -102,9 +129,12 @@
             text-align: center;
             border: 2px solid #eceff1;
             border-radius: 8px;
+            color: #333;
             outline: none;
             background: #fafafa;
         }
+
+        .input-group input:focus { border-color: var(--primary); background: #fff; }
 
         .g-saglam { border-left-color: var(--saglam); }
         .g-burusuk { border-left-color: var(--burusuk); }
@@ -123,8 +153,12 @@
             cursor: pointer;
             margin-top: 15px;
             box-shadow: 0 4px 10px rgba(27, 94, 32, 0.4);
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
+        .calc-btn:active { transform: scale(0.98); }
 
         .result-area {
             display: none;
@@ -136,7 +170,12 @@
             text-align: center;
         }
 
-        .main-yield { font-size: 4rem; font-weight: 900; color: var(--primary); line-height: 1; }
+        .main-yield {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
         .yield-subtitle { font-size: 1rem; font-weight: bold; color: #78909c; margin-bottom: 15px; }
 
         .price-display {
@@ -149,6 +188,7 @@
             margin-bottom: 15px;
         }
 
+        /* TOPLAM FİYAT ALANI */
         .total-payment {
             background: var(--total-color);
             color: white;
@@ -176,7 +216,9 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             margin-bottom: 10px;
-            display: flex; align-items: center; gap: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .alert-row {
@@ -279,14 +321,10 @@
                     <span>Silinen (Fire):</span>
                     <span id="alertLoss" class="val-red">0 KG</span>
                 </div>
+                <div style="border-top: 1px dashed #ccc; margin: 5px 0;"></div>
                 <div class="alert-row">
-                    <span>Ödenecek Net Kilo:</span>
-                    <span id="alertNet">0 KG</span>
-                </div>
-                <div style="border-top: 1px dashed #ccc; margin: 10px 0;"></div>
-                <div class="alert-row">
-                    <span>Net Ödenecek (Fiyat x Net Kilo):</span>
-                    <span id="alertNetCash" class="val-green">0.00 TL</span>
+                    <span>Ödenecek Net:</span>
+                    <span id="alertNet" class="val-green">0 KG</span>
                 </div>
             </div>
         </div>
@@ -324,6 +362,7 @@
                 priceEl.style.display = 'none';
             }
 
+            // TOPLAM TUTAR HESABI
             const totalArea = document.getElementById('totalPaymentArea');
             if (finalPriceVal > 0 && totalKg > 0) {
                 const totalCash = finalPriceVal * totalKg;
@@ -338,16 +377,10 @@
                 const yieldFactor = yieldVal / 50;
                 const payableKg = totalKg * yieldFactor;
                 const lostKg = totalKg - payableKg;
-                
-                // 50 Randıman üzerinden hesaplanan tutar (Net Kilo * Borsa Fiyatı)
-                const netPayableCash = payableKg * price;
 
                 document.getElementById('alertTotal').textContent = totalKg + " KG";
                 document.getElementById('alertLoss').textContent = "-" + lostKg.toFixed(1) + " KG";
                 document.getElementById('alertNet').textContent = payableKg.toFixed(1) + " KG";
-                
-                // Yeni hesaplamanın ekrana yazılması
-                document.getElementById('alertNetCash').textContent = netPayableCash.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " TL";
                 
                 kiloAlert.style.display = 'block';
             } else {
