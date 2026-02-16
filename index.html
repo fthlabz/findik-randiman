@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fındık Randıman Hesaplayıcı Pro</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32; /* Fındık Yaprağı Yeşili */
+            --secondary-color: #8d6e63; /* Kabuk Rengi */
+            --bg-color: #f1f8e9;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --error-color: #d32f2f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box; /* Padding taşmasını engeller */
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1b5e20;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #e8f5e9;
+            border-radius: 12px;
+            text-align: center;
+            display: none; /* Başlangıçta gizli */
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+            margin: 10px 0;
+        }
+
+        .price-info {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+
+        .error-msg {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🌰 Randıman Hesapla</h1>
+        
+        <div class="input-group">
+            <label for="sampleWeight">Numune Ağırlığı (gr)</label>
+            <input type="number" id="sampleWeight" value="250" placeholder="Genellikle 250gr">
+        </div>
+
+        <div class="input-group">
+            <label for="kernelWeight">İç Fındık Ağırlığı (gr)</label>
+            <input type="number" id="kernelWeight" placeholder="Örn: 130">
+            <div id="kernelError" class="error-msg">İç ağırlık numuneden büyük olamaz!</div>
+        </div>
+
+        <div class="input-group">
+            <label for="basePrice">Güncel Borsa Fiyatı (TL) - Opsiyonel</label>
+            <input type="number" id="basePrice" placeholder="Örn: 120">
+        </div>
+
+        <button id="calculateBtn">HESAPLA</button>
+
+        <div class="result-box" id="resultBox">
+            <div>Randıman</div>
+            <span class="result-value" id="yieldResult">0.00</span>
+            <div class="price-info" id="priceResult"></div>
+        </div>
+        
+        <div class="footer">
+            v1.0 - Senior Dev Edition
+        </div>
+    </div>
+
+    <script>
+        // DOM Elementlerini Seçimi (Performance Optimization)
+        const calculateBtn = document.getElementById('calculateBtn');
+        const sampleInput = document.getElementById('sampleWeight');
+        const kernelInput = document.getElementById('kernelWeight');
+        const priceInput = document.getElementById('basePrice');
+        const resultBox = document.getElementById('resultBox');
+        const yieldDisplay = document.getElementById('yieldResult');
+        const priceDisplay = document.getElementById('priceResult');
+        const kernelError = document.getElementById('kernelError');
+
+        // Hesaplama Fonksiyonu
+        function calculateYield() {
+            // Değerleri al ve sayıya çevir
+            const sample = parseFloat(sampleInput.value);
+            const kernel = parseFloat(kernelInput.value);
+            const price = parseFloat(priceInput.value);
+
+            // Validation (Doğrulama Katmanı)
+            let isValid = true;
+
+            if (isNaN(sample) || sample <= 0) {
+                alert("Lütfen geçerli bir numune ağırlığı giriniz.");
+                isValid = false;
+            }
+
+            if (isNaN(kernel) || kernel < 0) {
+                alert("Lütfen geçerli bir iç fındık ağırlığı giriniz.");
+                isValid = false;
+            }
+
+            if (kernel > sample) {
+                kernelError.style.display = 'block';
+                kernelInput.style.borderColor = 'var(--error-color)';
+                isValid = false;
+            } else {
+                kernelError.style.display = 'none';
+                kernelInput.style.borderColor = '#e0e0e0';
+            }
+
+            if (!isValid) return;
+
+            // Core Logic (Hesaplama)
+            // Formül: (İç / Numune) * 100
+            const yieldValue = (kernel / sample) * 100;
+            
+            // UI Update
+            yieldDisplay.textContent = yieldValue.toFixed(2); // Virgülden sonra 2 hane
+
+            // Fiyat Hesaplama (Eğer fiyat girildiyse)
+            // Mantık: Girilen fiyat genellikle 50 randıman baz fiyatıdır.
+            if (!isNaN(price) && price > 0) {
+                const realPrice = (price / 50) * yieldValue;
+                priceDisplay.innerHTML = `<strong>${yieldValue.toFixed(1)}</strong> randıman fiyatı: <strong>${realPrice.toFixed(2)} TL</strong>`;
+            } else {
+                priceDisplay.textContent = "";
+            }
+
+            // Sonucu göster (Animasyonlu geçiş için CSS class eklenebilir)
+            resultBox.style.display = 'block';
+        }
+
+        // Event Listener (Tıklama Olayı)
+        calculateBtn.addEventListener('click', calculateYield);
+
+        // Enter tuşuna basınca da hesaplasın (UX)
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                calculateYield();
+            }
+        });
+    </script>
+</body>
+</html>
