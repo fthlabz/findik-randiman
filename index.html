@@ -17,8 +17,9 @@
             --saglam: #2e7d32;
             --burusuk: #f9a825;
             --curuk: #c62828;
-            --dara: #90a4ae; /* Dara alanları için gri ton */
+            --dara: #90a4ae;
             --total-color: #0d47a1;
+            --share-color: #546e7a; /* Paylaş butonu rengi */
         }
 
         * { box-sizing: border-box; }
@@ -30,6 +31,7 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            padding-bottom: 40px; /* Mobilde alt kısım için boşluk */
         }
 
         .top-dashboard {
@@ -127,6 +129,25 @@
             box-shadow: 0 4px 10px rgba(27, 94, 32, 0.4);
             display: flex; justify-content: center; align-items: center; gap: 10px;
         }
+
+        /* --- YENİ EKLENEN PAYLAŞ BUTONU STİLİ --- */
+        .share-btn {
+            width: 100%;
+            background: var(--share-color);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: background 0.3s;
+        }
+        .share-btn:hover { background: #455a64; }
+        .share-btn:active { transform: scale(0.98); }
+        /* ---------------------------------------- */
 
         .result-area {
             display: none;
@@ -314,6 +335,10 @@
             </div>
         </div>
 
+        <button class="share-btn" onclick="shareResult()">
+            <i class="fas fa-share-alt"></i> PAYLAŞ / GÖNDER
+        </button>
+
     </div>
 
     <script>
@@ -397,6 +422,45 @@
 
             document.getElementById('resultArea').style.display = 'block';
             document.getElementById('resultArea').scrollIntoView({behavior: "smooth", block: "nearest"});
+        }
+
+        /* --- PAYLAŞ FONKSİYONU --- */
+        async function shareResult() {
+            const yieldVal = document.getElementById('yieldResult').textContent;
+            
+            // Eğer hesaplama yapılmamışsa sadece link paylaş
+            if(yieldVal === "00.00") {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Fındık Randıman Pro',
+                        text: 'Fındık randıman ve fiyat hesaplaması için bu aracı kullan:',
+                        url: window.location.href
+                    });
+                } else {
+                    alert("Tarayıcınız paylaşımı desteklemiyor.");
+                }
+                return;
+            }
+
+            // Hesaplama yapıldıysa detaylı paylaş
+            const priceText = document.getElementById('priceDisplay').innerText;
+            const netCash = document.getElementById('alertNetCash').innerText;
+            
+            let shareText = `🌰 Fındık Analiz Sonucum:\n\n📊 Randıman: ${yieldVal}\n💰 ${priceText}\n💵 Toplam Tutar: ${netCash}`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Fındık Randıman Sonucu',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Paylaşım iptal edildi');
+                }
+            } else {
+                alert("Sonucunuz:\n" + shareText);
+            }
         }
     </script>
 </body>
