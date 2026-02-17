@@ -223,6 +223,21 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(20px); }
 
+        /* İmza Stili */
+        .footer-signature {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #90a4ae;
+            padding: 20px 0;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        .footer-signature strong {
+            color: var(--primary);
+        }
+
     </style>
 </head>
 <body>
@@ -336,6 +351,10 @@
         <button class="share-btn" onclick="shareResult()">
             <i class="fas fa-share-alt"></i> SONUCU GÖNDER / PAYLAŞ
         </button>
+
+        <div class="footer-signature">
+            Powered by <strong>FthLabz</strong>
+        </div>
 
     </div>
 
