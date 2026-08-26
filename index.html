@@ -4,209 +4,350 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>Fındık Alım Fişi</title>
+<title>Fındık Alım Fişi Pro</title>
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <!-- PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <!-- QR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+<!-- PDF görüntüsü -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <style>
+
 :root{
-    --green:#176b35;
-    --green-dark:#0d4d25;
-    --green-light:#eaf6ee;
-    --orange:#e67e22;
-    --red:#c62828;
-    --blue:#174ea6;
+    --green:#185c20;
+    --green2:#2e7d32;
     --dark:#263238;
+    --blue:#0d47a1;
+    --orange:#ef6c00;
+    --red:#c62828;
+    --yellow:#f9a825;
+    --gray:#607d8b;
+    --bg:#eef2f3;
+    --border:#d4dde0;
     --text:#263238;
-    --muted:#607d8b;
-    --bg:#eef2f0;
-    --border:#d6ded9;
-    --white:#fff;
 }
 
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
     padding-bottom:50px;
 }
 
-button,input{
-    font:inherit;
+button,
+input{
+    font-family:inherit;
 }
 
-.header{
-    background:linear-gradient(135deg,var(--green-dark),var(--green));
+.app-header{
+    background:linear-gradient(135deg,#173d1b,#263238);
     color:white;
     padding:18px 16px;
     position:sticky;
     top:0;
-    z-index:100;
-    box-shadow:0 4px 15px rgba(0,0,0,.18);
+    z-index:1000;
+    box-shadow:0 4px 15px rgba(0,0,0,.2);
 }
 
-.company-title{
-    font-size:20px;
-    font-weight:900;
-    text-align:center;
-    letter-spacing:.4px;
+.header-inner{
+    max-width:720px;
+    margin:auto;
 }
 
-.company-subtitle{
-    text-align:center;
-    font-size:11px;
-    opacity:.8;
-    margin-top:4px;
-    letter-spacing:1.2px;
+.company-input{
+    width:100%;
+    background:rgba(255,255,255,.10);
+    color:white;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:9px;
+    padding:12px;
+    font-size:1.05rem;
+    font-weight:800;
+    outline:none;
+}
+
+.company-input::placeholder{
+    color:rgba(255,255,255,.65);
+}
+
+.header-meta{
+    margin-top:8px;
+    font-size:.72rem;
+    opacity:.75;
+    display:flex;
+    justify-content:space-between;
 }
 
 .container{
-    width:min(620px,100%);
-    margin:auto;
-    padding:14px;
+    width:min(720px,calc(100% - 24px));
+    margin:18px auto;
 }
 
-.card{
+/* FİŞ BAŞLIĞI */
+
+.receipt-heading{
+    background:white;
+    border-radius:16px;
+    border:1px solid var(--border);
+    padding:17px;
+    box-shadow:0 3px 12px rgba(0,0,0,.07);
+    margin-bottom:14px;
+}
+
+.receipt-top{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:flex-start;
+}
+
+.company-display{
+    font-size:1.25rem;
+    font-weight:950;
+    color:var(--green);
+    text-transform:uppercase;
+    line-height:1.15;
+    max-width:55%;
+}
+
+.receipt-title{
+    text-align:right;
+}
+
+.receipt-title h1{
+    margin:0;
+    font-size:1.25rem;
+    font-weight:950;
+    color:var(--dark);
+}
+
+.receipt-title p{
+    margin:5px 0 0;
+    font-size:.68rem;
+    color:#78909c;
+    font-weight:800;
+}
+
+.receipt-info{
+    margin-top:15px;
+    padding-top:12px;
+    border-top:1px dashed #b0bec5;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.info-box{
+    background:#f6f8f9;
+    border-radius:8px;
+    padding:8px 10px;
+}
+
+.info-box span{
+    display:block;
+    color:#78909c;
+    font-size:.65rem;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.info-box strong{
+    display:block;
+    margin-top:3px;
+    font-size:.9rem;
+}
+
+/* ÜRETİCİ */
+
+.section{
     background:white;
     border:1px solid var(--border);
-    border-radius:16px;
+    border-radius:15px;
     padding:16px;
     margin-bottom:14px;
-    box-shadow:0 3px 12px rgba(0,0,0,.05);
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
 
 .section-title{
     display:flex;
     align-items:center;
     gap:8px;
-    font-size:14px;
-    font-weight:900;
-    color:var(--green-dark);
-    margin-bottom:13px;
+    font-weight:950;
+    font-size:.9rem;
     text-transform:uppercase;
-    letter-spacing:.5px;
+    margin-bottom:12px;
 }
 
-.grid{
+.section-title i{
+    color:var(--green2);
+}
+
+.form-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
 }
 
-.field{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-}
-
-.field.full{
-    grid-column:1/-1;
-}
-
-.field label{
-    font-size:11px;
-    font-weight:800;
-    color:var(--muted);
+.form-field label{
+    display:block;
+    font-size:.7rem;
+    font-weight:900;
+    color:#607d8b;
+    margin-bottom:5px;
     text-transform:uppercase;
 }
 
-.field input{
+.form-field input{
     width:100%;
-    border:2px solid #e4eae6;
-    border-radius:10px;
-    padding:12px;
-    font-size:17px;
-    font-weight:800;
-    outline:none;
-    background:#fafcfb;
-}
-
-.field input:focus{
-    border-color:var(--green);
-}
-
-.price-box{
-    background:var(--dark);
-    color:white;
-    border-radius:14px;
-    padding:14px;
-}
-
-.price-box label{
-    display:block;
-    font-size:10px;
-    opacity:.75;
-    margin-bottom:5px;
-    font-weight:800;
-}
-
-.price-box input{
-    width:100%;
-    background:rgba(255,255,255,.1);
-    border:1px solid rgba(255,255,255,.2);
-    color:white;
+    border:2px solid #e4eaec;
+    background:#fafcfc;
     border-radius:9px;
     padding:11px;
-    font-size:20px;
-    font-weight:900;
-    text-align:center;
+    font-size:1rem;
+    font-weight:700;
     outline:none;
 }
 
-.analysis-row{
-    display:grid;
-    grid-template-columns:1fr 100px;
-    gap:10px;
+.form-field input:focus{
+    border-color:var(--green2);
+}
+
+/* FİYAT */
+
+.price-box{
+    background:linear-gradient(135deg,#263238,#37474f);
+    color:white;
+    border-radius:14px;
+    padding:15px;
+}
+
+.price-label{
+    font-size:.68rem;
+    opacity:.7;
+    font-weight:900;
+    text-transform:uppercase;
+}
+
+.price-row{
+    display:flex;
     align-items:center;
-    margin-bottom:10px;
+    gap:10px;
+    margin-top:7px;
 }
 
-.analysis-label{
-    background:#f7f9f8;
-    border-radius:10px;
-    padding:13px;
-    font-weight:800;
-    border-left:5px solid #aaa;
-}
-
-.analysis-label small{
-    display:block;
-    font-size:10px;
-    color:var(--muted);
-    margin-top:3px;
-    font-weight:500;
-}
-
-.analysis-row input{
-    width:100%;
-    border:2px solid #e2e8e4;
-    border-radius:10px;
-    padding:11px 5px;
+.price-row input{
+    width:140px;
+    border:0;
+    border-radius:8px;
+    padding:10px;
+    font-size:1.35rem;
+    font-weight:950;
     text-align:center;
-    font-size:18px;
-    font-weight:900;
-    outline:none;
+    color:#263238;
 }
 
-.sound .analysis-label{border-color:#2e7d32}
-.wrinkled .analysis-label{border-color:#f9a825}
-.rotten .analysis-label{border-color:#c62828}
-.tare .analysis-label{border-color:#90a4ae}
+.price-unit{
+    font-size:1.05rem;
+    font-weight:900;
+}
 
-.toggle{
+.price-note{
+    margin-top:8px;
+    font-size:.67rem;
+    opacity:.7;
+}
+
+/* HESAPLAMA */
+
+.calc-section{
+    background:white;
+    border-radius:15px;
+    border:1px solid var(--border);
+    padding:16px;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+
+.calc-title{
+    font-weight:950;
+    color:var(--green);
+    margin-bottom:14px;
+    font-size:1rem;
+}
+
+.input-group{
+    background:#fff;
+    border-radius:11px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:11px 13px;
+    border:1px solid var(--border);
+    border-left:6px solid #ccc;
+    min-height:66px;
+}
+
+.input-group label{
+    font-weight:900;
+    font-size:.98rem;
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    text-align:left;
+    align-items:flex-start;
+}
+
+.input-group label span{
+    font-size:.68rem;
+    color:#78909c;
+    font-weight:600;
+    margin-top:3px;
+}
+
+.input-group input{
+    width:105px;
+    padding:10px 6px;
+    font-size:1.25rem;
+    font-weight:950;
+    text-align:center;
+    border:2px solid #e5eaec;
+    border-radius:8px;
+    outline:none;
+    background:#fafafa;
+}
+
+.g-numune{border-left-color:#607d8b}
+.g-saglam{border-left-color:#2e7d32}
+.g-burusuk{border-left-color:#f9a825}
+.g-curuk{border-left-color:#c62828}
+.g-dara{border-left-color:#90a4ae}
+
+.toggle-area{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:10px 3px 15px;
-    font-size:13px;
-    font-weight:700;
+    padding:5px 4px 15px;
+    font-size:.78rem;
+    font-weight:800;
+    color:#546e7a;
 }
 
 .switch{
@@ -216,13 +357,15 @@ button,input{
 }
 
 .switch input{
-    display:none;
+    opacity:0;
+    width:0;
+    height:0;
 }
 
 .slider{
     position:absolute;
     inset:0;
-    background:#c7cfca;
+    background:#ccc;
     border-radius:30px;
     cursor:pointer;
 }
@@ -240,364 +383,335 @@ button,input{
 }
 
 .switch input:checked + .slider{
-    background:var(--green);
+    background:var(--green2);
 }
 
 .switch input:checked + .slider:before{
     transform:translateX(21px);
 }
 
-.calc{
+.calc-btn{
     width:100%;
     border:0;
-    border-radius:13px;
-    padding:16px;
     background:var(--green);
     color:white;
-    font-size:17px;
-    font-weight:900;
-    box-shadow:0 5px 15px rgba(23,107,53,.25);
-}
-
-.result{
-    display:none;
-}
-
-.yield{
-    text-align:center;
-    background:var(--green-light);
-    border-radius:15px;
-    padding:18px;
-}
-
-.yield-number{
-    font-size:60px;
-    line-height:1;
-    color:var(--green-dark);
+    border-radius:11px;
+    padding:16px;
+    font-size:1.12rem;
     font-weight:950;
+    margin-top:5px;
+    box-shadow:0 4px 12px rgba(27,94,32,.25);
+}
+
+/* SONUÇ */
+
+.result-area{
+    display:none;
+    margin-top:14px;
+}
+
+.result-card{
+    background:white;
+    border-radius:17px;
+    padding:18px;
+    border:1px solid var(--border);
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.yield-wrap{
+    text-align:center;
+    padding:5px 0 15px;
+}
+
+.main-yield{
+    font-size:4.2rem;
+    line-height:1;
+    font-weight:1000;
+    color:var(--green);
 }
 
 .yield-label{
-    margin-top:7px;
-    font-size:12px;
-    font-weight:900;
+    font-size:.75rem;
+    font-weight:950;
+    color:#78909c;
     letter-spacing:1px;
-    color:var(--muted);
 }
 
-.unit-price{
-    text-align:center;
-    background:#fff7e9;
-    border:1px solid #f4d6a5;
-    border-radius:12px;
-    margin-top:10px;
+.price-display{
+    background:#e8f5e9;
+    color:var(--green);
+    border-radius:10px;
     padding:13px;
-    font-size:18px;
-    font-weight:900;
-    color:#9a5800;
-}
-
-.payment{
-    background:var(--blue);
-    color:white;
-    border-radius:14px;
-    padding:17px;
-    margin-top:10px;
     text-align:center;
+    font-size:1.25rem;
+    font-weight:950;
 }
 
-.payment small{
-    font-size:10px;
-    opacity:.8;
+.total-payment{
+    background:linear-gradient(135deg,#0d47a1,#1565c0);
+    color:white;
+    padding:17px;
+    border-radius:12px;
+    text-align:center;
+    margin-top:10px;
+}
+
+.total-payment small{
     display:block;
-    font-weight:800;
+    font-size:.7rem;
+    opacity:.75;
+    font-weight:900;
 }
 
-.payment strong{
-    display:block;
-    font-size:30px;
-    margin-top:5px;
+.total-payment div{
+    font-size:2rem;
+    font-weight:1000;
+    margin-top:3px;
 }
 
-.detail{
+/* DETAY */
+
+.detail-box{
     margin-top:12px;
-    border:2px dashed #ccd7d0;
-    border-radius:13px;
-    padding:14px;
+    background:#f7f9fa;
+    border:1px solid #dce4e7;
+    border-radius:11px;
+    padding:13px;
 }
 
-.detail h3{
-    margin:0 0 12px;
-    font-size:12px;
+.detail-title{
     color:var(--red);
-    letter-spacing:.6px;
+    font-size:.75rem;
+    font-weight:950;
+    text-transform:uppercase;
+    margin-bottom:10px;
 }
 
 .detail-row{
     display:flex;
     justify-content:space-between;
     gap:15px;
-    padding:6px 0;
-    font-size:13px;
+    padding:5px 0;
+    font-size:.85rem;
     font-weight:700;
 }
 
 .detail-row strong{
-    text-align:right;
+    font-weight:950;
 }
 
-.loss{
+.red{
     color:var(--red);
 }
 
-.good{
+.green{
     color:var(--green);
 }
+
+.fire-box{
+    background:#ffebee;
+    border:1px dashed var(--red);
+    border-radius:9px;
+    padding:10px;
+    margin-top:9px;
+}
+
+/* BUTONLAR */
 
 .actions{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
+    gap:9px;
     margin-top:13px;
 }
 
-.action{
+.action-btn{
     border:0;
-    border-radius:12px;
-    padding:14px 8px;
+    border-radius:10px;
+    padding:13px 8px;
+    font-size:.82rem;
     font-weight:900;
     color:white;
-    font-size:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:7px;
 }
 
-.pdf{background:#37474f}
-.producer{background:#128c7e}
-.self{background:#455a64}
-.new{background:#e67e22}
+.btn-pdf{background:#b71c1c}
+.btn-self{background:#37474f}
+.btn-producer{background:#087f23}
+.btn-new{background:#455a64}
 
-.note{
-    margin-top:10px;
-    padding:11px;
-    background:#fff8e1;
-    border:1px solid #ffe082;
-    border-radius:10px;
-    font-size:11px;
-    line-height:1.5;
-    color:#6d4c00;
+.full{
+    grid-column:1 / -1;
 }
 
-.footer{
+/* QR */
+
+.qr-section{
+    display:none;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:15px;
+    margin-top:14px;
+    padding:16px;
     text-align:center;
-    color:#8a9991;
-    font-size:10px;
-    margin-top:18px;
-    letter-spacing:.8px;
 }
 
-/* PDF */
+.qr-title{
+    font-weight:950;
+    font-size:.85rem;
+}
 
-#pdfDocument{
-    position:absolute;
+.qr-sub{
+    font-size:.68rem;
+    color:#78909c;
+    margin:5px 0 12px;
+}
+
+#qrcode{
+    display:flex;
+    justify-content:center;
+}
+
+.qr-id{
+    margin-top:10px;
+    font-family:monospace;
+    font-size:.65rem;
+    color:#607d8b;
+    word-break:break-all;
+}
+
+/* PDF ÇIKTI ALANI */
+
+#printReceipt{
+    position:fixed;
     left:-10000px;
     top:0;
     width:794px;
     background:white;
-}
-
-.pdf-page{
-    width:794px;
-    min-height:1123px;
+    color:#111;
     padding:35px;
+}
+
+/* doğrulama */
+
+.verify-screen{
+    display:none;
     background:white;
-    color:#202b25;
-    font-family:Arial,sans-serif;
-    position:relative;
-}
-
-.pdf-head{
-    border-bottom:4px solid #176b35;
-    padding-bottom:14px;
-    display:flex;
-    justify-content:space-between;
-}
-
-.pdf-company{
-    font-size:27px;
-    font-weight:900;
-    color:#176b35;
-}
-
-.pdf-title{
-    font-size:18px;
-    font-weight:900;
-    margin-top:4px;
-}
-
-.pdf-meta{
-    text-align:right;
-    font-size:11px;
-    line-height:1.7;
-}
-
-.pdf-section{
-    margin-top:18px;
-}
-
-.pdf-section-title{
-    background:#176b35;
-    color:white;
-    padding:7px 10px;
-    font-size:11px;
-    font-weight:900;
-    letter-spacing:.6px;
-}
-
-.pdf-table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:11px;
-}
-
-.pdf-table td{
-    border:1px solid #d9e1dc;
-    padding:7px 9px;
-}
-
-.pdf-table td:first-child{
-    font-weight:800;
-    width:65%;
-}
-
-.pdf-table td:last-child{
-    text-align:right;
-    font-weight:800;
-}
-
-.pdf-yield{
-    margin-top:16px;
-    border:2px solid #176b35;
-    border-radius:8px;
-    text-align:center;
-    padding:13px;
-}
-
-.pdf-yield-number{
-    font-size:40px;
-    color:#176b35;
-    font-weight:900;
-}
-
-.pdf-yield-label{
-    font-size:10px;
-    font-weight:900;
-    color:#607d8b;
-}
-
-.pdf-total{
+    border-radius:15px;
+    padding:20px;
     margin-top:15px;
-    background:#174ea6;
-    color:white;
-    padding:14px;
-    border-radius:8px;
+}
+
+.verify-ok{
+    color:var(--green);
+    font-weight:950;
+}
+
+.verify-bad{
+    color:var(--red);
+    font-weight:950;
+}
+
+.footer{
     text-align:center;
+    color:#90a4ae;
+    font-size:.7rem;
+    padding:25px 0;
+    font-weight:700;
 }
 
-.pdf-total small{
-    display:block;
-    font-size:9px;
-}
+@media(max-width:520px){
 
-.pdf-total strong{
-    display:block;
-    font-size:27px;
-    margin-top:4px;
-}
-
-.pdf-warning{
-    margin-top:12px;
-    border:1px solid #e5b5b5;
-    background:#fff4f4;
-    padding:10px;
-    border-radius:7px;
-    font-size:10px;
-}
-
-.pdf-bottom{
-    position:absolute;
-    bottom:28px;
-    left:35px;
-    right:35px;
-    border-top:1px solid #d5ddd8;
-    padding-top:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:9px;
-    color:#65756c;
-}
-
-#qrcode{
-    width:90px;
-    height:90px;
-    background:white;
-    padding:4px;
-}
-
-.qr-area{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-@media(max-width:480px){
-    .grid{
+    .form-grid{
         grid-template-columns:1fr;
     }
 
-    .field.full{
-        grid-column:auto;
+    .receipt-top{
+        gap:8px;
+    }
+
+    .company-display{
+        font-size:1rem;
+    }
+
+    .receipt-title h1{
+        font-size:1rem;
+    }
+
+    .main-yield{
+        font-size:3.7rem;
     }
 
     .actions{
         grid-template-columns:1fr 1fr;
     }
+
 }
+
 </style>
 </head>
 
 <body>
 
-<header class="header">
-    <div class="company-title" id="companyTitle">GÜL KARDEŞLER FINDIK</div>
-    <div class="company-subtitle">FINDIK ALIM FİŞİ • DİJİTAL ALIM SİSTEMİ</div>
+<header class="app-header">
+
+    <div class="header-inner">
+
+        <input
+            id="companyName"
+            class="company-input"
+            placeholder="FİRMA ADI — Örn: Gül Kardeşler Fındık"
+            value=""
+            autocomplete="organization"
+        >
+
+        <div class="header-meta">
+            <span>FINDIK ALIM SİSTEMİ</span>
+            <span>FthLabz</span>
+        </div>
+
+    </div>
+
 </header>
+
 
 <main class="container">
 
-    <!-- FİRMA -->
-    <section class="card">
+    <!-- FİŞ BAŞLIĞI -->
 
-        <div class="section-title">
-            🏢 Firma Bilgileri
+    <section class="receipt-heading">
+
+        <div class="receipt-top">
+
+            <div
+                id="companyDisplay"
+                class="company-display">
+                FİRMA ADI
+            </div>
+
+            <div class="receipt-title">
+
+                <h1>FINDIK ALIM FİŞİ</h1>
+
+                <p>RANDIMAN • DARA • FİYAT • ÖDEME</p>
+
+            </div>
+
         </div>
 
-        <div class="grid">
+        <div class="receipt-info">
 
-            <div class="field full">
-                <label>Şirket Adı</label>
-                <input id="companyName"
-                       value="GÜL KARDEŞLER FINDIK"
-                       oninput="companyChanged()">
+            <div class="info-box">
+                <span>Fiş No</span>
+                <strong id="receiptNo">---</strong>
             </div>
 
-            <div class="field">
-                <label>Belge No</label>
-                <input id="documentNo" readonly>
-            </div>
-
-            <div class="field">
-                <label>Tarih</label>
-                <input id="dateField" readonly>
+            <div class="info-box">
+                <span>Tarih / Saat</span>
+                <strong id="receiptDate">---</strong>
             </div>
 
         </div>
@@ -606,25 +720,36 @@ button,input{
 
 
     <!-- ÜRETİCİ -->
-    <section class="card">
+
+    <section class="section">
 
         <div class="section-title">
-            👤 Üretici Bilgileri
+            <i class="fa-solid fa-user"></i>
+            ÜRETİCİ BİLGİLERİ
         </div>
 
-        <div class="grid">
+        <div class="form-grid">
 
-            <div class="field full">
+            <div class="form-field">
+
                 <label>Ad Soyad</label>
-                <input id="producerName"
-                       placeholder="Üreticinin adı soyadı">
+
+                <input
+                    id="producerName"
+                    type="text"
+                    placeholder="Üreticinin adı soyadı">
+
             </div>
 
-            <div class="field full">
+            <div class="form-field">
+
                 <label>Telefon / WhatsApp</label>
-                <input id="producerPhone"
-                       type="tel"
-                       placeholder="05XX XXX XX XX">
+
+                <input
+                    id="producerPhone"
+                    type="tel"
+                    placeholder="05xx xxx xx xx">
+
             </div>
 
         </div>
@@ -633,535 +758,759 @@ button,input{
 
 
     <!-- FİYAT -->
-    <section class="card">
 
-        <div class="section-title">
-            💰 Alım Fiyatı
-        </div>
+    <section class="section">
 
         <div class="price-box">
-            <label>50 RANDIMAN REFERANS FİYATI — TL / KG</label>
 
-            <input id="basePrice"
-                   type="number"
-                   inputmode="decimal"
-                   placeholder="245">
+            <div class="price-label">
+                Alım Fiyatı / 50 Randıman
+            </div>
+
+            <div class="price-row">
+
+                <input
+                    type="number"
+                    id="basePrice"
+                    placeholder="245"
+                    step="0.01">
+
+                <span class="price-unit">TL / KG</span>
+
+            </div>
+
+            <div class="price-note">
+                Bu fiyat hesaplama anında fişe kaydedilir.
+            </div>
+
         </div>
 
     </section>
 
 
-    <!-- KİLO -->
-    <section class="card">
+    <!-- HESAPLAMA -->
 
-        <div class="section-title">
-            ⚖️ Kilo & Dara
+    <section class="calc-section">
+
+        <div class="calc-title">
+            <i class="fa-solid fa-calculator"></i>
+            RANDIMAN HESAPLAMA
         </div>
 
-        <div class="grid">
 
-            <div class="field full">
-                <label>Brüt Toplam Kilo</label>
-                <input id="totalKg"
-                       type="number"
-                       inputmode="decimal"
-                       placeholder="Örn. 2000">
-            </div>
+        <div class="input-group g-numune">
 
-        </div>
-
-        <div style="height:10px"></div>
-
-        <div class="analysis-row tare">
-            <div class="analysis-label">
-                Çuval Adedi
-                <small>Her çuval 1 KG dara</small>
-            </div>
-
-            <input id="sackCount"
-                   type="number"
-                   inputmode="decimal"
-                   placeholder="Adet">
-        </div>
-
-        <div class="analysis-row tare">
-            <div class="analysis-label">
-                Taş / Toprak Darası
-                <small>KG olarak girin</small>
-            </div>
-
-            <input id="dustWeight"
-                   type="number"
-                   inputmode="decimal"
-                   placeholder="KG">
-        </div>
-
-    </section>
-
-
-    <!-- RANDIMAN -->
-    <section class="card">
-
-        <div class="section-title">
-            🥜 Numune Randıman Analizi
-        </div>
-
-        <div class="analysis-row">
-            <div class="analysis-label">
+            <label>
                 Numune Ağırlığı
-                <small>Genelde 250 gr</small>
-            </div>
+                <span>Genelde 250 gr</span>
+            </label>
 
-            <input id="sampleWeight"
-                   type="number"
-                   value="250"
-                   inputmode="decimal">
+            <input
+                type="number"
+                id="sampleWeight"
+                value="250">
+
         </div>
 
 
-        <div class="toggle">
-            <span>Buruşuk / Bezik yarıya düşülsün mü?</span>
+        <div class="toggle-area">
+
+            <span>
+                Buruşuk yarıya düşülsün mü?
+            </span>
 
             <label class="switch">
-                <input type="checkbox"
-                       id="wrinkleLogic"
-                       checked>
+
+                <input
+                    type="checkbox"
+                    id="wrinkleLogic"
+                    checked>
 
                 <span class="slider"></span>
+
             </label>
+
         </div>
 
 
-        <div class="analysis-row sound">
-            <div class="analysis-label">
+        <div class="input-group g-saglam">
+
+            <label>
                 Sağlam İç
-            </div>
+                <span>Gram</span>
+            </label>
 
-            <input id="soundWeight"
-                   type="number"
-                   inputmode="decimal"
-                   placeholder="gr">
+            <input
+                type="number"
+                id="soundWeight"
+                placeholder="gr">
+
         </div>
 
 
-        <div class="analysis-row wrinkled">
-            <div class="analysis-label">
+        <div class="input-group g-burusuk">
+
+            <label>
                 Buruşuk / Bezik
-            </div>
+                <span>Gram</span>
+            </label>
 
-            <input id="wrinkledWeight"
-                   type="number"
-                   inputmode="decimal"
-                   placeholder="gr">
+            <input
+                type="number"
+                id="wrinkledWeight"
+                placeholder="gr">
+
         </div>
 
 
-        <div class="analysis-row rotten">
-            <div class="analysis-label">
+        <div class="input-group g-curuk">
+
+            <label>
                 Çürük / Bozuk
-            </div>
+                <span>Gram</span>
+            </label>
 
-            <input id="rottenWeight"
-                   type="number"
-                   inputmode="decimal"
-                   placeholder="gr">
+            <input
+                type="number"
+                id="rottenWeight"
+                placeholder="gr">
+
         </div>
 
 
-        <button class="calc" onclick="hesapla()">
-            HESAPLA
+        <div class="input-group g-dara">
+
+            <label>
+                Çuval Adedi
+                <span>Her çuval 1 kg düşer</span>
+            </label>
+
+            <input
+                type="number"
+                id="sackCount"
+                placeholder="Adet">
+
+        </div>
+
+
+        <div class="input-group g-dara">
+
+            <label>
+                Taş / Toprak Darası
+                <span>Kg olarak girin</span>
+            </label>
+
+            <input
+                type="number"
+                id="dustWeight"
+                placeholder="Kg">
+
+        </div>
+
+
+        <div class="input-group g-dara">
+
+            <label>
+                Brüt Toplam
+                <span>Toplam gelen ürün</span>
+            </label>
+
+            <input
+                type="number"
+                id="totalKg"
+                placeholder="Kg">
+
+        </div>
+
+
+        <button
+            class="calc-btn"
+            onclick="hesapla()">
+
+            <i class="fa-solid fa-calculator"></i>
+
+            HESAPLA VE ALIM FİŞİNİ OLUŞTUR
+
         </button>
 
     </section>
 
 
     <!-- SONUÇ -->
-    <section class="card result" id="resultArea">
 
-        <div class="yield">
+    <section
+        id="resultArea"
+        class="result-area">
 
-            <div class="yield-number"
-                 id="yieldResult">
-                00.00
-            </div>
+        <div class="result-card">
 
-            <div class="yield-label">
-                NET RANDIMAN
-            </div>
+            <div class="yield-wrap">
 
-        </div>
-
-
-        <div class="unit-price"
-             id="priceDisplay">
-            -
-        </div>
-
-
-        <div class="payment">
-
-            <small>
-                ÖDENECEK TOPLAM TUTAR
-            </small>
-
-            <strong id="totalPaymentResult">
-                0,00 TL
-            </strong>
-
-        </div>
-
-
-        <div class="detail">
-
-            <h3>
-                KİLO & RANDIMAN ŞEFFAF ANALİZİ
-            </h3>
-
-
-            <div class="detail-row">
-                <span>Brüt Kilo</span>
-                <strong id="alertGross">0 KG</strong>
-            </div>
-
-
-            <div class="detail-row">
-                <span>Çuval + Taş/Toprak Darası</span>
-                <strong class="loss"
-                        id="alertTare">
-                    -0 KG
-                </strong>
-            </div>
-
-
-            <div class="detail-row">
-                <span>Net Ürün Kilosu</span>
-                <strong id="alertProductNet">0 KG</strong>
-            </div>
-
-
-            <div id="lowYieldSection">
-
-                <hr>
-
-                <div class="detail-row">
-                    <span>50 Randıman Altı Fire</span>
-                    <strong class="loss"
-                            id="alertLoss">
-                        -0 KG
-                    </strong>
+                <div
+                    id="yieldResult"
+                    class="main-yield">
+                    00.00
                 </div>
 
+                <div class="yield-label">
+                    NET RANDIMAN
+                </div>
+
+            </div>
+
+
+            <div
+                id="priceDisplay"
+                class="price-display">
+                ---
+            </div>
+
+
+            <div
+                id="totalPaymentArea"
+                class="total-payment">
+
+                <small>ÖDENECEK TOPLAM TUTAR</small>
+
+                <div id="totalPaymentResult">
+                    0,00 TL
+                </div>
+
+            </div>
+
+
+            <!-- DETAY -->
+
+            <div
+                id="kiloAlert"
+                class="detail-box">
+
+                <div class="detail-title">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    ALIM HESAP DETAYI
+                </div>
 
                 <div class="detail-row">
-                    <span>Para Alacak Net Kilo</span>
-                    <strong class="good"
-                            id="alertNet">
+                    <span>Brüt Kilo</span>
+                    <strong id="alertGross">0 KG</strong>
+                </div>
+
+                <div class="detail-row">
+                    <span>Dara (Çuval + Taş)</span>
+                    <strong
+                        id="alertTare"
+                        class="red">
                         0 KG
                     </strong>
                 </div>
 
+                <div class="detail-row">
+                    <span>Net Ürün Kilosu</span>
+                    <strong id="alertProductNet">0 KG</strong>
+                </div>
+
+
+                <div
+                    id="lowYieldSection"
+                    class="fire-box"
+                    style="display:none">
+
+                    <div class="detail-row">
+
+                        <span>
+                            50 Randıman Altı Fire
+                        </span>
+
+                        <strong
+                            id="alertLoss"
+                            class="red">
+                            0 KG
+                        </strong>
+
+                    </div>
+
+                    <div class="detail-row">
+
+                        <span>
+                            İşlem Görecek Kilo
+                        </span>
+
+                        <strong
+                            id="alertNet"
+                            class="green">
+                            0 KG
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    style="
+                    border-top:1px dashed #ccc;
+                    margin:10px 0;">
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>Net Ödenecek</span>
+
+                    <strong
+                        id="alertNetCash"
+                        class="green">
+                        0,00 TL
+                    </strong>
+
+                </div>
+
             </div>
 
 
-            <hr>
+            <!-- BUTONLAR -->
 
-            <div class="detail-row">
-                <span>Net Ödenecek</span>
-                <strong class="good"
-                        id="alertNetCash">
-                    0,00 TL
-                </strong>
-            </div>
+            <div class="actions">
 
-        </div>
+                <button
+                    class="action-btn btn-pdf"
+                    onclick="createPDF()">
 
+                    <i class="fa-solid fa-file-pdf"></i>
+                    PDF FİŞ
 
-        <div class="note">
-            ℹ️ <strong>Fiyat bilgilendirmesi:</strong>
-            Hesaplama, fiş oluşturulduğu anda girilen
-            50 randıman referans fiyatı üzerinden yapılmıştır.
-            Piyasa fiyatı değişebilir.
-        </div>
+                </button>
 
 
-        <div class="actions">
+                <button
+                    class="action-btn btn-self"
+                    onclick="sendSelf()">
 
-            <button class="action pdf"
-                    onclick="downloadPDF()">
-                📄 PDF FİŞ
-            </button>
+                    <i class="fa-brands fa-whatsapp"></i>
+                    KENDİME YEDEKLE
 
-            <button class="action producer"
+                </button>
+
+
+                <button
+                    class="action-btn btn-producer"
                     onclick="sendProducer()">
-                📲 ÜRETİCİYE GÖNDER
-            </button>
 
-            <button class="action self"
-                    onclick="shareSelf()">
-                💾 KENDİME GÖNDER
-            </button>
+                    <i class="fa-brands fa-whatsapp"></i>
+                    ÜRETİCİYE GÖNDER
 
-            <button class="action new"
+                </button>
+
+
+                <button
+                    class="action-btn btn-new"
                     onclick="newReceipt()">
-                ＋ YENİ ALIM
-            </button>
+
+                    <i class="fa-solid fa-plus"></i>
+                    YENİ ALIM
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- QR -->
+
+        <div
+            id="qrSection"
+            class="qr-section">
+
+            <div class="qr-title">
+                FİŞ DOĞRULAMA QR
+            </div>
+
+            <div class="qr-sub">
+                Fiş verilerini doğrulamak için okutun.
+            </div>
+
+            <div id="qrcode"></div>
+
+            <div
+                id="qrId"
+                class="qr-id">
+            </div>
 
         </div>
 
     </section>
 
 
+    <!-- DOĞRULAMA -->
+
+    <section
+        id="verifyScreen"
+        class="verify-screen">
+
+        <h3>
+            <i class="fa-solid fa-shield-halved"></i>
+            FİŞ DOĞRULAMA
+        </h3>
+
+        <div id="verifyResult"></div>
+
+    </section>
+
+
     <div class="footer">
-        Dijital Fındık Alım Sistemi • Powered by FthLabz
+        Powered by <strong>FthLabz</strong>
     </div>
 
 </main>
 
 
-<!-- =====================================
-     GERÇEK PDF BELGESİ
-===================================== -->
+<!-- PDF İÇİN GİZLİ FİŞ -->
 
-<div id="pdfDocument">
+<div id="printReceipt">
 
-    <div class="pdf-page">
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        border-bottom:3px solid #185c20;
+        padding-bottom:15px;
+        margin-bottom:18px;">
 
-        <div class="pdf-head">
-
-            <div>
-                <div class="pdf-company"
-                     id="pdfCompany">
-                    GÜL KARDEŞLER FINDIK
-                </div>
-
-                <div class="pdf-title">
-                    FINDIK ALIM FİŞİ
-                </div>
+        <div>
+            <div
+                id="pdfCompany"
+                style="
+                font-size:25px;
+                font-weight:900;
+                color:#185c20;">
             </div>
 
+            <div
+                style="
+                margin-top:6px;
+                font-size:11px;
+                color:#607d8b;">
+                Fındık Alım Sistemi
+            </div>
+        </div>
 
-            <div class="pdf-meta">
 
-                <strong>Belge No:</strong>
-                <span id="pdfDocumentNo"></span>
+        <div style="text-align:right">
 
-                <br>
+            <div
+                style="
+                font-size:23px;
+                font-weight:900;">
+                FINDIK ALIM FİŞİ
+            </div>
 
-                <strong>Tarih:</strong>
-                <span id="pdfDate"></span>
+            <div
+                id="pdfReceiptNo"
+                style="
+                font-size:11px;
+                margin-top:5px;">
+            </div>
 
-                <br>
-
-                <strong>Oluşturulma:</strong>
-                <span id="pdfTime"></span>
-
+            <div
+                id="pdfDate"
+                style="
+                font-size:11px;">
             </div>
 
         </div>
 
-
-        <div class="pdf-section">
-
-            <div class="pdf-section-title">
-                ÜRETİCİ BİLGİLERİ
-            </div>
-
-            <table class="pdf-table">
-
-                <tr>
-                    <td>Ad Soyad</td>
-                    <td id="pdfProducer"></td>
-                </tr>
-
-                <tr>
-                    <td>Telefon / WhatsApp</td>
-                    <td id="pdfPhone"></td>
-                </tr>
-
-            </table>
-
-        </div>
+    </div>
 
 
-        <div class="pdf-section">
+    <div
+        style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        margin-bottom:15px;">
 
-            <div class="pdf-section-title">
-                ALIM BİLGİLERİ
-            </div>
+        <div
+            style="
+            background:#f3f6f7;
+            padding:12px;
+            border-radius:8px;">
 
-            <table class="pdf-table">
+            <b>ÜRETİCİ</b>
 
-                <tr>
-                    <td>50 Randıman Referans Fiyatı</td>
-                    <td id="pdfBasePrice"></td>
-                </tr>
-
-                <tr>
-                    <td>Brüt Kilo</td>
-                    <td id="pdfGross"></td>
-                </tr>
-
-                <tr>
-                    <td>Çuval Darası</td>
-                    <td id="pdfSack"></td>
-                </tr>
-
-                <tr>
-                    <td>Taş / Toprak Darası</td>
-                    <td id="pdfDust"></td>
-                </tr>
-
-                <tr>
-                    <td>Toplam Dara</td>
-                    <td id="pdfTare"></td>
-                </tr>
-
-                <tr>
-                    <td>Net Ürün Kilosu</td>
-                    <td id="pdfNet"></td>
-                </tr>
-
-            </table>
-
-        </div>
-
-
-        <div class="pdf-section">
-
-            <div class="pdf-section-title">
-                NUMUNE RANDIMAN ANALİZİ
-            </div>
-
-            <table class="pdf-table">
-
-                <tr>
-                    <td>Numune Ağırlığı</td>
-                    <td id="pdfSample"></td>
-                </tr>
-
-                <tr>
-                    <td>Sağlam İç</td>
-                    <td id="pdfSound"></td>
-                </tr>
-
-                <tr>
-                    <td>Buruşuk / Bezik</td>
-                    <td id="pdfWrinkled"></td>
-                </tr>
-
-                <tr>
-                    <td>Çürük / Bozuk</td>
-                    <td id="pdfRotten"></td>
-                </tr>
-
-            </table>
-
-        </div>
-
-
-        <div class="pdf-yield">
-
-            <div class="pdf-yield-number"
-                 id="pdfYield">
-                00.00
-            </div>
-
-            <div class="pdf-yield-label">
-                NET RANDIMAN
+            <div
+                id="pdfProducer"
+                style="
+                margin-top:5px;
+                font-size:15px;
+                font-weight:800;">
             </div>
 
         </div>
 
 
-        <div class="pdf-section">
+        <div
+            style="
+            background:#f3f6f7;
+            padding:12px;
+            border-radius:8px;">
 
-            <table class="pdf-table">
+            <b>TELEFON</b>
 
-                <tr>
-                    <td>Hesaplanan Birim Fiyat</td>
-                    <td id="pdfUnitPrice"></td>
-                </tr>
-
-                <tr>
-                    <td>50 Randıman Altı Fire</td>
-                    <td id="pdfLoss"></td>
-                </tr>
-
-                <tr>
-                    <td>Para Alacak Net Kilo</td>
-                    <td id="pdfPayableKg"></td>
-                </tr>
-
-            </table>
+            <div
+                id="pdfPhone"
+                style="
+                margin-top:5px;
+                font-size:15px;
+                font-weight:800;">
+            </div>
 
         </div>
 
+    </div>
 
-        <div class="pdf-total">
 
-            <small>
-                NET ÖDENECEK TUTAR
-            </small>
+    <div
+        style="
+        background:#263238;
+        color:white;
+        border-radius:9px;
+        padding:15px;
+        margin-bottom:15px;">
 
-            <strong id="pdfTotal">
-                0,00 TL
-            </strong>
-
+        <div style="font-size:11px;opacity:.75;">
+            ALIM FİYATI / 50 RANDIMAN
         </div>
 
+        <div
+            id="pdfBasePrice"
+            style="
+            font-size:22px;
+            font-weight:900;
+            margin-top:3px;">
+        </div>
 
-        <div class="pdf-warning">
+        <div
+            id="pdfPriceTime"
+            style="
+            font-size:9px;
+            opacity:.7;
+            margin-top:4px;">
+        </div>
 
-            <strong>Fiyat ve hesaplama açıklaması:</strong>
+    </div>
 
-            Bu alım fişi, işlem sırasında sisteme girilen
-            numune, kilo, dara ve fiyat bilgileri esas alınarak
-            oluşturulmuştur.
 
-            Fiyat, fiş oluşturulduğu andaki girilen referans
-            fiyat üzerinden hesaplanmıştır.
+    <table
+        style="
+        width:100%;
+        border-collapse:collapse;
+        font-size:12px;
+        margin-bottom:15px;">
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Numune
+            </td>
+            <td
+                id="pdfSample"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Sağlam İç
+            </td>
+            <td
+                id="pdfSound"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Buruşuk / Bezik
+            </td>
+            <td
+                id="pdfWrinkled"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Çürük / Bozuk
+            </td>
+            <td
+                id="pdfRotten"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Brüt Kilo
+            </td>
+            <td
+                id="pdfGross"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Dara
+            </td>
+            <td
+                id="pdfTare"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;border-bottom:1px solid #ddd;">
+                Net Ürün
+            </td>
+            <td
+                id="pdfNetProduct"
+                style="
+                padding:7px;
+                border-bottom:1px solid #ddd;
+                text-align:right;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;font-weight:900;">
+                Randıman
+            </td>
+            <td
+                id="pdfYield"
+                style="
+                padding:7px;
+                text-align:right;
+                font-weight:900;">
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:7px;font-weight:900;">
+                Birim Fiyat
+            </td>
+            <td
+                id="pdfUnitPrice"
+                style="
+                padding:7px;
+                text-align:right;
+                font-weight:900;">
+            </td>
+        </tr>
+
+    </table>
+
+
+    <div
+        id="pdfFire"
+        style="
+        display:none;
+        background:#ffebee;
+        padding:12px;
+        border-radius:8px;
+        margin-bottom:15px;
+        font-size:12px;">
+    </div>
+
+
+    <div
+        style="
+        background:#0d47a1;
+        color:white;
+        border-radius:10px;
+        padding:17px;
+        text-align:center;
+        margin-bottom:15px;">
+
+        <div
+            style="
+            font-size:11px;
+            opacity:.8;">
+            ÖDENECEK TUTAR
+        </div>
+
+        <div
+            id="pdfTotal"
+            style="
+            font-size:28px;
+            font-weight:950;
+            margin-top:4px;">
+        </div>
+
+    </div>
+
+
+    <div
+        style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        border-top:1px dashed #aaa;
+        padding-top:13px;">
+
+        <div
+            style="
+            width:75%;
+            font-size:9px;
+            color:#607d8b;
+            line-height:1.45;">
+
+            <b>FİYAT KAYDI:</b>
+            Bu fişte yer alan alım fiyatı ve hesaplama
+            bilgileri fiş oluşturulduğu tarih ve saatte
+            kaydedilmiştir.
 
             <br><br>
 
-            <strong>Belge zamanı:</strong>
-            <span id="pdfTimestamp"></span>
+            <b>DOĞRULAMA:</b>
+            QR kod üzerinden fiş verilerinin doğrulama
+            özeti kontrol edilebilir.
 
         </div>
 
-
-        <div class="pdf-bottom">
-
-            <div>
-
-                <strong>Fındık Alım Fişi</strong>
-                <br>
-
-                Belge:
-                <span id="pdfBottomNo"></span>
-
-                <br>
-
-                FthLabz Dijital Alım Sistemi
-
-            </div>
-
-
-            <div class="qr-area">
-
-                <div id="qrcode"></div>
-
-                <div>
-                    <strong>Belge QR</strong>
-                    <br>
-                    <span style="font-size:8px">
-                        Belge kimlik kodu
-                    </span>
-                </div>
-
-            </div>
-
+        <div
+            id="pdfQR"
+            style="
+            width:100px;
+            height:100px;">
         </div>
 
+    </div>
+
+
+    <div
+        style="
+        text-align:center;
+        margin-top:15px;
+        font-size:9px;
+        color:#90a4ae;">
+        FthLabz • Fındık Alım Fişi
     </div>
 
 </div>
@@ -1169,149 +1518,218 @@ button,input{
 
 <script>
 
-/* =====================================================
-   FIRMA AYARI
-===================================================== */
+/* =========================================================
+   GENEL DURUM
+========================================================= */
 
-const DEFAULT_COMPANY = "FTH KARDEŞLER FINDIK";
-
-let currentCalculation = null;
+let currentReceipt = null;
 
 
-/* =====================================================
-   BELGE NUMARASI
-===================================================== */
+/* =========================================================
+   YARDIMCI FONKSİYONLAR
+========================================================= */
 
-function createDocumentNo(){
-
-    const now = new Date();
-
-    const year = now.getFullYear();
-
-    const random =
-        Math.floor(100000 + Math.random() * 900000);
-
-    return `FA-${year}-${random}`;
+function el(id){
+    return document.getElementById(id);
 }
 
-
-/* =====================================================
-   TARİH
-===================================================== */
-
-function updateDocumentDate(){
-
-    const now = new Date();
-
-    document.getElementById("documentNo").value =
-        createDocumentNo();
-
-    document.getElementById("dateField").value =
-        now.toLocaleDateString("tr-TR");
-
-}
-
-
-/* =====================================================
-   ŞİRKET
-===================================================== */
-
-function companyChanged(){
-
-    const value =
-        document.getElementById("companyName").value.trim();
-
-    document.getElementById("companyTitle").textContent =
-        value || DEFAULT_COMPANY;
-
-}
-
-
-/* =====================================================
-   FORMAT
-===================================================== */
 
 function money(value){
 
-    return Number(value).toLocaleString("tr-TR",{
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-    }) + " TL";
+    return Number(value || 0).toLocaleString(
+        "tr-TR",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    ) + " TL";
 
 }
 
 
 function kg(value){
 
-    return Number(value).toLocaleString("tr-TR",{
-        minimumFractionDigits:1,
-        maximumFractionDigits:1
-    }) + " KG";
+    return Number(value || 0).toLocaleString(
+        "tr-TR",
+        {
+            minimumFractionDigits:1,
+            maximumFractionDigits:1
+        }
+    ) + " KG";
 
 }
 
 
-/* =====================================================
-   ANA HESAPLAMA
-   ESKİ PROGRAMIN MANTIĞI KORUNDU
-===================================================== */
+function getCompany(){
 
-function hesapla(){
+    const value = el("companyName").value.trim();
+
+    if(!value){
+
+        return "FİRMA ADI";
+
+    }
+
+    return value;
+
+}
+
+
+/* =========================================================
+   TARİH / FİŞ NO
+========================================================= */
+
+function createReceiptNo(){
+
+    const d = new Date();
+
+    const date =
+        d.getFullYear().toString() +
+        String(d.getMonth()+1).padStart(2,"0") +
+        String(d.getDate()).padStart(2,"0");
+
+    const time =
+        String(d.getHours()).padStart(2,"0") +
+        String(d.getMinutes()).padStart(2,"0") +
+        String(d.getSeconds()).padStart(2,"0");
+
+    const random =
+        Math.random()
+        .toString(36)
+        .substring(2,7)
+        .toUpperCase();
+
+    return "FA-" + date + "-" + time + "-" + random;
+
+}
+
+
+function formatDate(date){
+
+    return new Intl.DateTimeFormat(
+        "tr-TR",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit",
+            second:"2-digit"
+        }
+    ).format(date);
+
+}
+
+
+/* =========================================================
+   SHA-256
+========================================================= */
+
+async function sha256(text){
+
+    const buffer =
+        new TextEncoder().encode(text);
+
+    const hash =
+        await crypto.subtle.digest(
+            "SHA-256",
+            buffer
+        );
+
+    return Array
+        .from(new Uint8Array(hash))
+        .map(
+            b => b.toString(16).padStart(2,"0")
+        )
+        .join("");
+
+}
+
+
+/* =========================================================
+   BASE64 URL
+========================================================= */
+
+function base64urlEncode(text){
+
+    const bytes =
+        new TextEncoder().encode(text);
+
+    let binary = "";
+
+    bytes.forEach(
+        b => binary += String.fromCharCode(b)
+    );
+
+    return btoa(binary)
+        .replace(/\+/g,"-")
+        .replace(/\//g,"_")
+        .replace(/=/g,"");
+
+}
+
+
+function base64urlDecode(text){
+
+    text =
+        text.replace(/-/g,"+")
+            .replace(/_/g,"/");
+
+    while(text.length % 4){
+
+        text += "=";
+
+    }
+
+    const binary = atob(text);
+
+    const bytes =
+        Uint8Array.from(
+            binary,
+            c => c.charCodeAt(0)
+        );
+
+    return new TextDecoder().decode(bytes);
+
+}
+
+
+/* =========================================================
+   HESAPLAMA
+   BU KISIM SENİN VERDİĞİN PROGRAMIN MANTIĞIDIR.
+========================================================= */
+
+async function hesapla(){
 
     const sample =
-        parseFloat(
-            document.getElementById("sampleWeight").value
-        ) || 250;
-
+        parseFloat(el("sampleWeight").value) || 250;
 
     const price =
-        parseFloat(
-            document.getElementById("basePrice").value
-        ) || 0;
-
+        parseFloat(el("basePrice").value) || 0;
 
     const totalKg =
-        parseFloat(
-            document.getElementById("totalKg").value
-        ) || 0;
-
+        parseFloat(el("totalKg").value) || 0;
 
     const sound =
-        parseFloat(
-            document.getElementById("soundWeight").value
-        ) || 0;
-
+        parseFloat(el("soundWeight").value) || 0;
 
     const wrinkled =
-        parseFloat(
-            document.getElementById("wrinkledWeight").value
-        ) || 0;
-
+        parseFloat(el("wrinkledWeight").value) || 0;
 
     const rotten =
-        parseFloat(
-            document.getElementById("rottenWeight").value
-        ) || 0;
-
+        parseFloat(el("rottenWeight").value) || 0;
 
     const sacks =
-        parseFloat(
-            document.getElementById("sackCount").value
-        ) || 0;
-
+        parseFloat(el("sackCount").value) || 0;
 
     const dust =
-        parseFloat(
-            document.getElementById("dustWeight").value
-        ) || 0;
+        parseFloat(el("dustWeight").value) || 0;
 
 
     /* DARA */
 
-    const sackTare = sacks;
-
     const totalTare =
-        sackTare + dust;
+        sacks + dust;
 
 
     /* NET ÜRÜN */
@@ -1326,28 +1744,25 @@ function hesapla(){
     /* BURUŞUK MANTIĞI */
 
     const useWrinkleLogic =
-        document.getElementById("wrinkleLogic").checked;
-
+        el("wrinkleLogic").checked;
 
     const wrinkleMultiplier =
-        useWrinkleLogic ? 0.5 : 1;
-
-
-    const netSampleWeight =
-        sound +
-        (wrinkled * wrinkleMultiplier);
+        useWrinkleLogic ? 0.5 : 1.0;
 
 
     /* RANDIMAN */
 
+    const netWeight =
+        sound +
+        (wrinkled * wrinkleMultiplier);
+
     const yieldVal =
-        (netSampleWeight / sample) * 100;
+        (netWeight / sample) * 100;
 
 
-    /* NORMAL BİRİM FİYAT */
+    /* BİRİM FİYAT */
 
     let finalPriceVal = 0;
-
 
     if(price > 0){
 
@@ -1357,26 +1772,21 @@ function hesapla(){
     }
 
 
-    /* =================================================
-       50 ALTI HESAP
-    ================================================= */
+    /* 50 ALTINDA ÖDEME KİLOSU */
 
     let finalPayableWeight =
         productNetWeight;
 
-
     let lostKg = 0;
 
-
-    if(yieldVal < 50 && yieldVal > 0){
+    if(yieldVal < 50){
 
         const yieldFactor =
             yieldVal / 50;
 
-
         finalPayableWeight =
-            productNetWeight * yieldFactor;
-
+            productNetWeight *
+            yieldFactor;
 
         lostKg =
             productNetWeight -
@@ -1385,123 +1795,39 @@ function hesapla(){
     }
 
 
-    /* =================================================
-       ÖDEME
-    ================================================= */
+    /* NET NAKİT */
 
-    let finalCash = 0;
-
-
-    if(yieldVal < 50){
-
-        finalCash =
-            finalPayableWeight * price;
-
-    }else{
-
-        finalCash =
-            productNetWeight *
-            finalPriceVal;
-
-    }
+    const finalCash =
+        (yieldVal < 50)
+            ? (finalPayableWeight * price)
+            : (productNetWeight * finalPriceVal);
 
 
-    /* =================================================
-       EKRAN
-    ================================================= */
+    /* ZAMAN */
 
-    document.getElementById("yieldResult").textContent =
-        yieldVal.toFixed(2);
+    const now = new Date();
 
 
-    document.getElementById("priceDisplay").textContent =
-        finalPriceVal > 0
-        ? `Birim Fiyat: ${money(finalPriceVal)}`
-        : "-";
+    /* FİŞ */
 
+    currentReceipt = {
 
-    document.getElementById("totalPaymentResult").textContent =
-        money(finalCash);
+        version:"1.0",
 
+        receiptNo:createReceiptNo(),
 
-    document.getElementById("alertGross").textContent =
-        kg(totalKg);
+        createdAt:now.toISOString(),
 
+        createdAtText:formatDate(now),
 
-    document.getElementById("alertTare").textContent =
-        "-" + kg(totalTare);
+        company:getCompany(),
 
+        producer:{
+            name:el("producerName").value.trim(),
+            phone:el("producerPhone").value.trim()
+        },
 
-    document.getElementById("alertProductNet").textContent =
-        kg(productNetWeight);
-
-
-    document.getElementById("alertLoss").textContent =
-        "-" + kg(lostKg);
-
-
-    document.getElementById("alertNet").textContent =
-        kg(finalPayableWeight);
-
-
-    document.getElementById("alertNetCash").textContent =
-        money(finalCash);
-
-
-    const lowSection =
-        document.getElementById("lowYieldSection");
-
-
-    if(yieldVal < 50){
-
-        lowSection.style.display =
-            "block";
-
-    }else{
-
-        lowSection.style.display =
-            "none";
-
-    }
-
-
-    document.getElementById("resultArea").style.display =
-        "block";
-
-
-    /* =================================================
-       HESAP KAYDI
-    ================================================= */
-
-    currentCalculation = {
-
-        company:
-            document.getElementById("companyName").value.trim()
-            || DEFAULT_COMPANY,
-
-        producer:
-            document.getElementById("producerName").value.trim(),
-
-        phone:
-            document.getElementById("producerPhone").value.trim(),
-
-        documentNo:
-            document.getElementById("documentNo").value,
-
-        date:
-            new Date(),
-
-        basePrice:price,
-
-        totalKg,
-
-        sacks,
-
-        dust,
-
-        totalTare,
-
-        productNetWeight,
+        priceBase:price,
 
         sample,
 
@@ -1511,333 +1837,339 @@ function hesapla(){
 
         rotten,
 
-        yieldVal,
+        wrinkleLogic:useWrinkleLogic,
 
-        finalPriceVal,
+        sacks,
 
-        finalPayableWeight,
+        dust,
 
-        lostKg,
+        grossKg:totalKg,
 
-        finalCash
+        tareKg:totalTare,
+
+        productNetKg:productNetWeight,
+
+        yield:yieldVal,
+
+        unitPrice:finalPriceVal,
+
+        payableKg:finalPayableWeight,
+
+        fireKg:lostKg,
+
+        totalCash:finalCash
 
     };
 
 
-    /* PDF VERİLERİNİ DOLDUR */
+    /* DOĞRULAMA HASH */
 
-    fillPDF();
+    const cleanData =
+        JSON.stringify(currentReceipt);
+
+    currentReceipt.hash =
+        await sha256(cleanData);
 
 
-    document.getElementById("resultArea")
-        .scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
+    renderResult();
+
+    createQR();
+
+    preparePDF();
+
+    saveReceipt();
 
 }
 
 
-/* =====================================================
-   PDF VERİLERİNİ DOLDUR
-===================================================== */
+/* =========================================================
+   SONUCU EKRANA BAS
+========================================================= */
 
-function fillPDF(){
+function renderResult(){
 
-    if(!currentCalculation) return;
+    const r = currentReceipt;
 
+    el("receiptNo").textContent =
+        r.receiptNo;
 
-    const d = currentCalculation;
+    el("receiptDate").textContent =
+        r.createdAtText;
 
 
-    document.getElementById("pdfCompany").textContent =
-        d.company;
+    el("companyDisplay").textContent =
+        r.company;
 
 
-    document.getElementById("pdfDocumentNo").textContent =
-        d.documentNo;
+    el("yieldResult").textContent =
+        r.yield.toFixed(2);
 
 
-    document.getElementById("pdfDate").textContent =
-        d.date.toLocaleDateString("tr-TR");
+    el("priceDisplay").textContent =
+        "Birim Fiyatı: " +
+        money(r.unitPrice);
 
 
-    document.getElementById("pdfTime").textContent =
-        d.date.toLocaleTimeString("tr-TR");
+    el("totalPaymentResult").textContent =
+        money(r.totalCash);
 
 
-    document.getElementById("pdfProducer").textContent =
-        d.producer || "-";
+    el("alertGross").textContent =
+        kg(r.grossKg);
 
 
-    document.getElementById("pdfPhone").textContent =
-        d.phone || "-";
+    el("alertTare").textContent =
+        "-" + kg(r.tareKg);
 
 
-    document.getElementById("pdfBasePrice").textContent =
-        money(d.basePrice) + " / KG";
+    el("alertProductNet").textContent =
+        kg(r.productNetKg);
 
 
-    document.getElementById("pdfGross").textContent =
-        kg(d.totalKg);
+    if(r.yield < 50){
 
+        el("lowYieldSection").style.display =
+            "block";
 
-    document.getElementById("pdfSack").textContent =
-        "-" + kg(d.sacks);
+        el("alertLoss").textContent =
+            "-" + kg(r.fireKg);
 
+        el("alertNet").textContent =
+            kg(r.payableKg);
 
-    document.getElementById("pdfDust").textContent =
-        "-" + kg(d.dust);
+    }else{
 
-
-    document.getElementById("pdfTare").textContent =
-        "-" + kg(d.totalTare);
-
-
-    document.getElementById("pdfNet").textContent =
-        kg(d.productNetWeight);
-
-
-    document.getElementById("pdfSample").textContent =
-        d.sample.toFixed(1) + " GR";
-
-
-    document.getElementById("pdfSound").textContent =
-        d.sound.toFixed(1) + " GR";
-
-
-    document.getElementById("pdfWrinkled").textContent =
-        d.wrinkled.toFixed(1) + " GR";
-
-
-    document.getElementById("pdfRotten").textContent =
-        d.rotten.toFixed(1) + " GR";
-
-
-    document.getElementById("pdfYield").textContent =
-        d.yieldVal.toFixed(2);
-
-
-    document.getElementById("pdfUnitPrice").textContent =
-        money(d.finalPriceVal) + " / KG";
-
-
-    document.getElementById("pdfLoss").textContent =
-        d.yieldVal < 50
-        ? "-" + kg(d.lostKg)
-        : "Uygulanmadı";
-
-
-    document.getElementById("pdfPayableKg").textContent =
-        kg(d.finalPayableWeight);
-
-
-    document.getElementById("pdfTotal").textContent =
-        money(d.finalCash);
-
-
-    document.getElementById("pdfTimestamp").textContent =
-        d.date.toLocaleDateString("tr-TR")
-        + " "
-        + d.date.toLocaleTimeString("tr-TR");
-
-
-    document.getElementById("pdfBottomNo").textContent =
-        d.documentNo;
-
-
-    /* =================================================
-       QR
-       Şimdilik belge kimliği taşıyor.
-       SaaS backend kurulduğunda bunun içine
-       doğrulama URL'si verilecek.
-    ================================================= */
-
-    const qr =
-        document.getElementById("qrcode");
-
-
-    qr.innerHTML = "";
-
-
-    new QRCode(qr,{
-
-        text:
-            "FTHLABZ-FINDIK-FIS|" +
-            d.documentNo,
-
-        width:82,
-
-        height:82,
-
-        correctLevel:
-            QRCode.CorrectLevel.H
-
-    });
-
-}
-
-
-/* =====================================================
-   PDF OLUŞTUR
-===================================================== */
-
-async function downloadPDF(){
-
-    if(!currentCalculation){
-
-        alert("Önce hesaplama yapınız.");
-
-        return;
+        el("lowYieldSection").style.display =
+            "none";
 
     }
 
 
-    fillPDF();
+    el("alertNetCash").textContent =
+        money(r.totalCash);
 
 
-    const element =
-        document.getElementById("pdfDocument");
+    el("resultArea").style.display =
+        "block";
 
 
-    const fileName =
-        currentCalculation.documentNo
-        + "-"
-        + currentCalculation.company
-            .replace(/[^a-zA-Z0-9çğıöşüÇĞİÖŞÜ ]/g,"")
-            .replace(/\s+/g,"-")
-        + ".pdf";
-
-
-    const options = {
-
-        margin:0,
-
-        filename:fileName,
-
-        image:{
-            type:"jpeg",
-            quality:0.98
+    setTimeout(
+        () => {
+            el("resultArea")
+                .scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
         },
+        100
+    );
 
-        html2canvas:{
-            scale:2,
-            useCORS:true,
-            backgroundColor:"#ffffff"
-        },
+}
 
-        jsPDF:{
-            unit:"px",
-            format:[794,1123],
-            orientation:"portrait"
-        },
 
-        pagebreak:{
-            mode:["avoid-all"]
+/* =========================================================
+   QR
+========================================================= */
+
+function createQR(){
+
+    const r = currentReceipt;
+
+    el("qrcode").innerHTML = "";
+
+    /*
+       QR içinde fişin tamamı bulunur.
+       Bu sayede internet olmasa bile veri taşınabilir.
+    */
+
+    const payload = {
+
+        type:"FINDIK_ALIM_FISI",
+
+        receipt:r.receiptNo,
+
+        data:r,
+
+        hash:r.hash
+
+    };
+
+
+    const encoded =
+        base64urlEncode(
+            JSON.stringify(payload)
+        );
+
+
+    /*
+       Aynı sayfadaki doğrulama ekranına gider.
+       GitHub Pages üzerinde çalışır.
+    */
+
+    const verifyUrl =
+        location.origin +
+        location.pathname +
+        "#verify=" +
+        encoded;
+
+
+    new QRCode(
+        el("qrcode"),
+        {
+            text:verifyUrl,
+            width:180,
+            height:180,
+            correctLevel:QRCode.CorrectLevel.M
         }
+    );
+
+
+    el("qrId").textContent =
+        "FİŞ ID: " +
+        r.receiptNo;
+
+}
+
+
+/* =========================================================
+   PDF VERİLERİNİ HAZIRLA
+========================================================= */
+
+function preparePDF(){
+
+    const r = currentReceipt;
+
+
+    el("pdfCompany").textContent =
+        r.company;
+
+    el("pdfReceiptNo").textContent =
+        "Fiş No: " + r.receiptNo;
+
+    el("pdfDate").textContent =
+        r.createdAtText;
+
+
+    el("pdfProducer").textContent =
+        r.producer.name || "-";
+
+    el("pdfPhone").textContent =
+        r.producer.phone || "-";
+
+
+    el("pdfBasePrice").textContent =
+        money(r.priceBase) + " / 50 RANDIMAN";
+
+    el("pdfPriceTime").textContent =
+        "Fiyat kayıt zamanı: " +
+        r.createdAtText;
+
+
+    el("pdfSample").textContent =
+        r.sample.toFixed(0) + " gr";
+
+    el("pdfSound").textContent =
+        r.sound.toFixed(1) + " gr";
+
+    el("pdfWrinkled").textContent =
+        r.wrinkled.toFixed(1) + " gr";
+
+    el("pdfRotten").textContent =
+        r.rotten.toFixed(1) + " gr";
+
+    el("pdfGross").textContent =
+        kg(r.grossKg);
+
+    el("pdfTare").textContent =
+        "-" + kg(r.tareKg);
+
+    el("pdfNetProduct").textContent =
+        kg(r.productNetKg);
+
+    el("pdfYield").textContent =
+        r.yield.toFixed(2);
+
+    el("pdfUnitPrice").textContent =
+        money(r.unitPrice);
+
+    el("pdfTotal").textContent =
+        money(r.totalCash);
+
+
+    if(r.yield < 50){
+
+        el("pdfFire").style.display =
+            "block";
+
+        el("pdfFire").innerHTML =
+            "<b>50 RANDIMAN ALTI UYGULAMASI</b><br>" +
+            "Fire: -" +
+            r.fireKg.toFixed(1) +
+            " KG &nbsp;&nbsp; " +
+            "İşlem Görecek Kilo: " +
+            r.payableKg.toFixed(1) +
+            " KG";
+
+    }else{
+
+        el("pdfFire").style.display =
+            "none";
+
+    }
+
+
+    /* PDF QR */
+
+    const pdfQR =
+        el("pdfQR");
+
+    pdfQR.innerHTML = "";
+
+    const payload = {
+
+        type:"FINDIK_ALIM_FISI",
+
+        receipt:r.receiptNo,
+
+        data:r,
+
+        hash:r.hash
 
     };
 
+    const encoded =
+        base64urlEncode(
+            JSON.stringify(payload)
+        );
 
-    await html2pdf()
-        .set(options)
-        .from(element)
-        .save();
-
-}
-
-
-/* =====================================================
-   ÜRETİCİYE WHATSAPP
-===================================================== */
-
-function normalizePhone(phone){
-
-    let p =
-        String(phone || "")
-        .replace(/\D/g,"");
+    const verifyUrl =
+        location.origin +
+        location.pathname +
+        "#verify=" +
+        encoded;
 
 
-    if(p.startsWith("0")){
-
-        p =
-            "90" +
-            p.substring(1);
-
-    }
-
-
-    if(!p.startsWith("90")){
-
-        p =
-            "90" + p;
-
-    }
-
-
-    return p;
+    new QRCode(
+        pdfQR,
+        {
+            text:verifyUrl,
+            width:100,
+            height:100,
+            correctLevel:QRCode.CorrectLevel.M
+        }
+    );
 
 }
 
 
-function createWhatsAppMessage(){
+/* =========================================================
+   PDF OLUŞTUR
+   TEK A4 SAYFA
+========================================================= */
 
-    const d =
-        currentCalculation;
+async function createPDF(){
 
-
-    let message =
-
-`*${d.company}*
-
-📋 *FINDIK ALIM FİŞİ*
-
-Belge No: ${d.documentNo}
-Tarih: ${d.date.toLocaleDateString("tr-TR")}
-Saat: ${d.date.toLocaleTimeString("tr-TR")}
-
-👤 *Üretici:* ${d.producer || "-"}
-📦 *Brüt Kilo:* ${kg(d.totalKg)}
-🗑️ *Dara:* -${kg(d.totalTare)}
-🥜 *Net Ürün:* ${kg(d.productNetWeight)}
-
-📊 *Randıman:* ${d.yieldVal.toFixed(2)}
-💰 *50 Randıman Fiyatı:* ${money(d.basePrice)}
-💵 *Birim Fiyat:* ${money(d.finalPriceVal)}`;
-
-    
-    if(d.yieldVal < 50){
-
-        message +=
-
-`\n\n⚠️ *50 Randıman Altı Hesap*
-Fire: -${kg(d.lostKg)}
-İşlem Görecek Kilo: ${kg(d.finalPayableWeight)}`;
-
-    }
-
-
-    message +=
-
-`\n\n✅ *ÖDENECEK TUTAR:* ${money(d.finalCash)}
-
-ℹ️ Fiyat, işlem sırasında girilen referans fiyat üzerinden hesaplanmıştır.
-
-📄 Belge: ${d.documentNo}`;
-
-
-    return message;
-
-}
-
-
-/* =====================================================
-   ÜRETİCİYE GÖNDER
-===================================================== */
-
-async function sendProducer(){
-
-    if(!currentCalculation){
+    if(!currentReceipt){
 
         alert("Önce hesaplama yapınız.");
 
@@ -1846,148 +2178,259 @@ async function sendProducer(){
     }
 
 
-    const phone =
-        normalizePhone(
-            currentCalculation.phone
-        );
+    preparePDF();
 
 
-    if(phone.length < 12){
-
-        alert(
-            "Üreticinin geçerli WhatsApp numarasını giriniz."
-        );
-
-        return;
-
-    }
-
-
-    const message =
-        createWhatsAppMessage();
+    const source =
+        el("printReceipt");
 
 
     /*
-       WhatsApp sohbetini üretici numarasıyla açıyoruz.
+       Gizli fişi görüntülemeden render ediyoruz.
     */
 
-    const url =
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(message);
+    const canvas =
+        await html2canvas(
+            source,
+            {
+                scale:2,
+                backgroundColor:"#ffffff",
+                useCORS:true
+            }
+        );
 
 
-    window.open(url,"_blank");
-
-}
-
-
-/* =====================================================
-   KENDİME / PAYLAŞ
-===================================================== */
-
-async function shareSelf(){
-
-    if(!currentCalculation){
-
-        alert("Önce hesaplama yapınız.");
-
-        return;
-
-    }
+    const imgData =
+        canvas.toDataURL(
+            "image/jpeg",
+            0.95
+        );
 
 
-    fillPDF();
+    const {
+        jsPDF
+    } = window.jspdf;
 
 
-    const message =
-        createWhatsAppMessage();
+    const pdf =
+        new jsPDF(
+            {
+                orientation:"portrait",
+                unit:"mm",
+                format:"a4",
+                compress:true
+            }
+        );
+
+
+    const pageWidth =
+        210;
+
+    const pageHeight =
+        297;
+
+
+    const margin =
+        7;
+
+
+    const availableWidth =
+        pageWidth -
+        margin * 2;
+
+
+    const ratio =
+        canvas.height /
+        canvas.width;
+
+
+    const imgHeight =
+        availableWidth *
+        ratio;
 
 
     /*
-       Önce PDF'i dosya olarak üretmeyi deniyoruz.
+       TEK SAYFA GARANTİSİ:
+       İçeriği A4'e sığdır.
     */
 
-    try{
-
-        const element =
-            document.getElementById("pdfDocument");
-
-
-        const blob =
-            await html2pdf()
-            .set({
-
-                margin:0,
-
-                image:{
-                    type:"jpeg",
-                    quality:.98
-                },
-
-                html2canvas:{
-                    scale:2,
-                    useCORS:true,
-                    backgroundColor:"#ffffff"
-                },
-
-                jsPDF:{
-                    unit:"px",
-                    format:[794,1123],
-                    orientation:"portrait"
-                },
-
-                pagebreak:{
-                    mode:["avoid-all"]
-                }
-
-            })
-            .from(element)
-            .outputPdf("blob");
+    const finalHeight =
+        Math.min(
+            imgHeight,
+            pageHeight - margin * 2
+        );
 
 
-        const file =
-            new File(
-                [blob],
-                currentCalculation.documentNo + ".pdf",
-                {
-                    type:"application/pdf"
-                }
-            );
+    pdf.addImage(
+        imgData,
+        "JPEG",
+        margin,
+        margin,
+        availableWidth,
+        finalHeight,
+        undefined,
+        "FAST"
+    );
 
 
-        if(
-            navigator.share &&
-            navigator.canShare &&
-            navigator.canShare({
-                files:[file]
-            })
-        ){
+    const filename =
+        "Fındık-Alım-Fişi-" +
+        currentReceipt.receiptNo +
+        ".pdf";
+
+
+    /*
+       Telefon destekliyorsa gerçek PDF dosyasını
+       paylaşım ekranına verir.
+    */
+
+    const blob =
+        pdf.output("blob");
+
+
+    const file =
+        new File(
+            [blob],
+            filename,
+            {
+                type:"application/pdf"
+            }
+        );
+
+
+    if(
+        navigator.canShare &&
+        navigator.canShare({
+            files:[file]
+        })
+    ){
+
+        try{
 
             await navigator.share({
-
-                text:message,
-
-                files:[file]
-
+                files:[file],
+                title:"Fındık Alım Fişi",
+                text:
+                    currentReceipt.company +
+                    " - " +
+                    currentReceipt.receiptNo
             });
-
 
             return;
 
+        }catch(e){
+
+            console.log(
+                "PDF paylaşımı iptal edildi."
+            );
+
         }
-
-    }catch(e){
-
-        console.log(e);
 
     }
 
 
     /*
-       Dosya paylaşımı desteklenmiyorsa
-       WhatsApp mesajını paylaş.
+       Desteklenmeyen cihazlarda PDF indirilir.
+    */
+
+    pdf.save(filename);
+
+}
+
+
+/* =========================================================
+   WHATSAPP METNİ
+========================================================= */
+
+function createWhatsAppText(){
+
+    const r = currentReceipt;
+
+    let fireText = "";
+
+    if(r.yield < 50){
+
+        fireText =
+            "\n⚠️ *50 Randıman Altı Fire:* -" +
+            r.fireKg.toFixed(1) +
+            " KG" +
+            "\n⚖️ *İşlem Görecek Kilo:* " +
+            r.payableKg.toFixed(1) +
+            " KG\n";
+
+    }
+
+
+    return `
+📋 *FINDIK ALIM FİŞİ*
+
+🏢 *Firma:* ${r.company}
+
+🧾 *Fiş No:* ${r.receiptNo}
+
+📅 *Tarih / Saat:* ${r.createdAtText}
+
+👤 *Üretici:* ${r.producer.name || "-"}
+
+📞 *Telefon:* ${r.producer.phone || "-"}
+
+━━━━━━━━━━━━━━
+
+📉 *Alım Fiyatı:* ${money(r.priceBase)} / 50 Randıman
+
+📊 *Randıman:* ${r.yield.toFixed(2)}
+
+💰 *Birim Fiyat:* ${money(r.unitPrice)}
+
+📦 *Brüt Kilo:* ${r.grossKg.toFixed(1)} KG
+
+🗑️ *Dara:* -${r.tareKg.toFixed(1)} KG
+
+🥜 *Net Ürün:* ${r.productNetKg.toFixed(1)} KG
+${fireText}
+━━━━━━━━━━━━━━
+
+⚖️ *ÖDENECEK KİLO:* ${r.payableKg.toFixed(1)} KG
+
+✅ *ÖDENECEK TUTAR:* ${money(r.totalCash)}
+
+━━━━━━━━━━━━━━
+
+🔐 *Fiş doğrulama özeti:*
+${r.hash.substring(0,16).toUpperCase()}
+
+ℹ️ Bu fiyat ve hesaplama bilgileri fiş oluşturulduğu tarih/saatte kaydedilmiştir.
+
+🏢 ${r.company}
+    `.trim();
+
+}
+
+
+/* =========================================================
+   KENDİME YEDEKLE
+   SHARE SHEET AÇILIR → WHATSAPP / MESAJ / DOSYALAR
+========================================================= */
+
+async function sendSelf(){
+
+    if(!currentReceipt){
+
+        alert("Önce hesaplama yapınız.");
+
+        return;
+
+    }
+
+
+    const text =
+        createWhatsAppText();
+
+
+    /*
+       navigator.share kullanılır.
+       Böylece kullanıcı WhatsApp'ta istediği kişiyi
+       seçebilir.
     */
 
     if(navigator.share){
@@ -1996,38 +2439,272 @@ async function shareSelf(){
 
             await navigator.share({
 
-                text:message
+                title:
+                    "Fındık Alım Fişi - " +
+                    currentReceipt.receiptNo,
+
+                text:text
 
             });
 
-        }catch(e){}
+        }catch(e){
+
+            console.log(
+                "Paylaşım iptal edildi."
+            );
+
+        }
 
     }else{
 
-        window.open(
-
-            "https://wa.me/?text=" +
-            encodeURIComponent(message),
-
-            "_blank"
-
-        );
+        copyText(text);
 
     }
 
 }
 
 
-/* =====================================================
+/* =========================================================
+   ÜRETİCİYE GÖNDER
+   DOĞRUDAN ÜRETİCİNİN NUMARASINA
+========================================================= */
+
+function sendProducer(){
+
+    if(!currentReceipt){
+
+        alert("Önce hesaplama yapınız.");
+
+        return;
+
+    }
+
+
+    let phone =
+        currentReceipt.producer.phone
+        .replace(/\D/g,"");
+
+
+    if(!phone){
+
+        alert(
+            "Üreticinin telefon numarasını giriniz."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Türkiye numarası:
+       05xx → 90xx
+    */
+
+    if(phone.startsWith("0")){
+
+        phone =
+            "90" +
+            phone.substring(1);
+
+    }
+
+    if(!phone.startsWith("90")){
+
+        alert(
+            "Lütfen Türkiye telefon numarasını giriniz."
+        );
+
+        return;
+
+    }
+
+
+    const message =
+        createWhatsAppText();
+
+
+    const url =
+        "https://wa.me/" +
+        phone +
+        "?text=" +
+        encodeURIComponent(message);
+
+
+    window.open(
+        url,
+        "_blank"
+    );
+
+}
+
+
+/* =========================================================
+   KOPYALA
+========================================================= */
+
+async function copyText(text){
+
+    try{
+
+        await navigator.clipboard.writeText(text);
+
+        alert(
+            "Fiş metni panoya kopyalandı."
+        );
+
+    }catch(e){
+
+        alert(text);
+
+    }
+
+}
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function saveReceipt(){
+
+    if(!currentReceipt){
+
+        return;
+
+    }
+
+
+    const key =
+        "findik_receipt_" +
+        currentReceipt.receiptNo;
+
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(currentReceipt)
+    );
+
+
+    localStorage.setItem(
+        "findik_company",
+        currentReceipt.company
+    );
+
+}
+
+
+/* =========================================================
+   FİRMA ADINI HATIRLA
+========================================================= */
+
+function loadCompany(){
+
+    const saved =
+        localStorage.getItem(
+            "findik_company"
+        );
+
+
+    if(saved){
+
+        el("companyName").value =
+            saved;
+
+        el("companyDisplay").textContent =
+            saved;
+
+    }
+
+}
+
+
+/* =========================================================
    YENİ ALIM
-===================================================== */
+========================================================= */
 
 function newReceipt(){
 
+    const ok =
+        confirm(
+            "Yeni alım fişi oluşturulsun mu?"
+        );
+
+
+    if(!ok){
+
+        return;
+
+    }
+
+
+    [
+        "producerName",
+        "producerPhone",
+        "soundWeight",
+        "wrinkledWeight",
+        "rottenWeight",
+        "sackCount",
+        "dustWeight",
+        "totalKg"
+    ].forEach(
+        id => el(id).value = ""
+    );
+
+
+    el("resultArea").style.display =
+        "none";
+
+
+    el("qrSection").style.display =
+        "none";
+
+
+    currentReceipt =
+        null;
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   FİRMA ADI CANLI GÜNCELLE
+========================================================= */
+
+el("companyName").addEventListener(
+    "input",
+    function(){
+
+        el("companyDisplay").textContent =
+            this.value.trim() ||
+            "FİRMA ADI";
+
+        localStorage.setItem(
+            "findik_company",
+            this.value.trim()
+        );
+
+    }
+);
+
+
+/* =========================================================
+   QR DOĞRULAMA
+========================================================= */
+
+async function verifyQR(){
+
+    const hash =
+        location.hash;
+
+
     if(
-        !confirm(
-            "Mevcut alım ekranını temizleyip yeni fiş oluşturulsun mu?"
-        )
+        !hash.startsWith("#verify=")
     ){
 
         return;
@@ -2035,61 +2712,171 @@ function newReceipt(){
     }
 
 
-    document
-        .querySelectorAll(
-            "input:not(#companyName):not(#sampleWeight):not(#documentNo):not(#dateField)"
-        )
-        .forEach(input => {
+    try{
 
-            input.value = "";
-
-        });
+        const encoded =
+            hash.substring(
+                "#verify=".length
+            );
 
 
-    document.getElementById("sampleWeight").value =
-        "250";
+        const decoded =
+            base64urlDecode(encoded);
 
 
-    document.getElementById("wrinkleLogic").checked =
-        true;
+        const payload =
+            JSON.parse(decoded);
 
 
-    document.getElementById("resultArea").style.display =
-        "none";
+        const data =
+            payload.data;
 
 
-    updateDocumentDate();
+        /*
+           Hash'i yeniden hesapla.
+           Hash, QR içerisindeki verinin
+           sonradan değiştirilip değiştirilmediğini
+           kontrol eder.
+        */
+
+        const receivedHash =
+            data.hash;
 
 
-    currentCalculation =
-        null;
+        const copy =
+            JSON.parse(
+                JSON.stringify(data)
+            );
 
 
-    window.scrollTo({
+        delete copy.hash;
 
-        top:0,
 
-        behavior:"smooth"
+        const calculatedHash =
+            await sha256(
+                JSON.stringify(copy)
+            );
 
-    });
+
+        el("verifyScreen").style.display =
+            "block";
+
+
+        if(
+            receivedHash ===
+            calculatedHash
+        ){
+
+            el("verifyResult").innerHTML = `
+
+                <div class="verify-ok">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    FİŞ VERİLERİ DOĞRULANDI
+
+                </div>
+
+                <hr>
+
+                <b>Firma:</b>
+                ${escapeHTML(data.company)}
+                <br><br>
+
+                <b>Fiş No:</b>
+                ${escapeHTML(data.receiptNo)}
+                <br><br>
+
+                <b>Tarih:</b>
+                ${escapeHTML(data.createdAtText)}
+                <br><br>
+
+                <b>Üretici:</b>
+                ${escapeHTML(data.producer.name || "-")}
+                <br><br>
+
+                <b>Randıman:</b>
+                ${Number(data.yield).toFixed(2)}
+                <br><br>
+
+                <b>Ödenecek Tutar:</b>
+                ${money(data.totalCash)}
+                <br><br>
+
+                <small>
+                SHA-256:
+                ${data.hash}
+                </small>
+
+            `;
+
+        }else{
+
+            el("verifyResult").innerHTML = `
+
+                <div class="verify-bad">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    DOĞRULAMA BAŞARISIZ
+
+                </div>
+
+                <p>
+                QR içerisindeki veriler ile
+                doğrulama özeti uyuşmuyor.
+                </p>
+
+            `;
+
+        }
+
+
+    }catch(e){
+
+        console.error(e);
+
+        el("verifyScreen").style.display =
+            "block";
+
+        el("verifyResult").innerHTML = `
+
+            <div class="verify-bad">
+
+                QR verisi okunamadı.
+
+            </div>
+
+        `;
+
+    }
 
 }
 
 
-/* =====================================================
-   BAŞLAT
-===================================================== */
+/* =========================================================
+   HTML GÜVENLİĞİ
+========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
+function escapeHTML(value){
 
-        updateDocumentDate();
+    return String(value || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
-        companyChanged();
+}
 
-    }
-);
+
+/* =========================================================
+   BAŞLANGIÇ
+========================================================= */
+
+loadCompany();
+
+verifyQR();
 
 </script>
 
